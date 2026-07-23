@@ -81,26 +81,53 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { title: "ExamSaathi — AI-powered CET Preparation" },
-      { name: "description", content: "Crack CET, SSC, banking and more with an AI tutor, adaptive mock tests, previous papers and topic-wise quizzes." },
+      {
+        name: "description",
+        content:
+          "Crack CET, SSC, banking and more with an AI tutor, adaptive mock tests, previous papers and topic-wise quizzes.",
+      },
       { name: "author", content: "ExamSaathi" },
       { name: "theme-color", content: "#4f46e5" },
       { property: "og:title", content: "ExamSaathi — AI-powered CET Preparation" },
-      { property: "og:description", content: "Crack CET, SSC, banking and more with an AI tutor, adaptive mock tests, previous papers and topic-wise quizzes." },
+      {
+        property: "og:description",
+        content:
+          "Crack CET, SSC, banking and more with an AI tutor, adaptive mock tests, previous papers and topic-wise quizzes.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "ExamSaathi — AI-powered CET Preparation" },
-      { name: "twitter:description", content: "Crack CET, SSC, banking and more with an AI tutor, adaptive mock tests, previous papers and topic-wise quizzes." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ece27fb8-3280-4ebc-9f1a-a4c875eebb0d/id-preview-9996ecd5--efdef429-481b-40b7-9f8c-8ba1d989f052.lovable.app-1784727127777.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ece27fb8-3280-4ebc-9f1a-a4c875eebb0d/id-preview-9996ecd5--efdef429-481b-40b7-9f8c-8ba1d989f052.lovable.app-1784727127777.png" },
+      {
+        name: "twitter:description",
+        content:
+          "Crack CET, SSC, banking and more with an AI tutor, adaptive mock tests, previous papers and topic-wise quizzes.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ece27fb8-3280-4ebc-9f1a-a4c875eebb0d/id-preview-9996ecd5--efdef429-481b-40b7-9f8c-8ba1d989f052.lovable.app-1784727127777.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ece27fb8-3280-4ebc-9f1a-a4c875eebb0d/id-preview-9996ecd5--efdef429-481b-40b7-9f8c-8ba1d989f052.lovable.app-1784727127777.png",
+      },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      {
+        rel: "icon",
+        type: "image/svg+xml",
+        href: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🎓</text></svg>",
+      },
       { rel: "manifest", href: "/manifest.webmanifest" },
-      { rel: "apple-touch-icon", href: "/favicon.ico" },
+      {
+        rel: "apple-touch-icon",
+        href: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🎓</text></svg>",
+      },
     ],
   }),
   shellComponent: RootShell,
