@@ -15,6 +15,12 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AppExamsRouteImport } from './routes/_app.exams'
 import { Route as AppProfileRouteImport } from './routes/_app.profile'
 import { Route as AppResultRouteImport } from './routes/_app.result'
+import { Route as AuthIndexRouteImport } from './routes/auth.index'
+import { Route as AuthForgotPasswordRouteImport } from './routes/auth.forgot-password'
+import { Route as AuthLoginOtpRouteImport } from './routes/auth.login-otp'
+import { Route as AuthRegisterRouteImport } from './routes/auth.register'
+import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-password'
+import { Route as AuthVerifyEmailRouteImport } from './routes/auth.verify-email'
 import { Route as AppLeaderboardQuizIdRouteImport } from './routes/_app.leaderboard.$quizId'
 import { Route as AppExamsExamIdChatRouteImport } from './routes/_app.exams.$examId.chat'
 import { Route as AppExamsExamIdMockRouteImport } from './routes/_app.exams.$examId.mock'
@@ -51,6 +57,36 @@ const AppResultRoute = AppResultRouteImport.update({
   id: '/result',
   path: '/result',
   getParentRoute: () => AppRoute,
+} as any)
+const AuthIndexRoute = AuthIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthLoginOtpRoute = AuthLoginOtpRouteImport.update({
+  id: '/login-otp',
+  path: '/login-otp',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthRegisterRoute = AuthRegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthVerifyEmailRoute = AuthVerifyEmailRouteImport.update({
+  id: '/verify-email',
+  path: '/verify-email',
+  getParentRoute: () => AuthRoute,
 } as any)
 const AppLeaderboardQuizIdRoute = AppLeaderboardQuizIdRouteImport.update({
   id: '/leaderboard/$quizId',
@@ -93,10 +129,16 @@ const AppExamsExamIdTopicsTopicIdChatRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/exams': typeof AppExamsRouteWithChildren
   '/profile': typeof AppProfileRoute
   '/result': typeof AppResultRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/login-otp': typeof AuthLoginOtpRoute
+  '/auth/register': typeof AuthRegisterRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/auth/verify-email': typeof AuthVerifyEmailRoute
+  '/auth/': typeof AuthIndexRoute
   '/leaderboard/$quizId': typeof AppLeaderboardQuizIdRoute
   '/exams/$examId/chat': typeof AppExamsExamIdChatRoute
   '/exams/$examId/mock': typeof AppExamsExamIdMockRoute
@@ -107,10 +149,15 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
   '/exams': typeof AppExamsRouteWithChildren
   '/profile': typeof AppProfileRoute
   '/result': typeof AppResultRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/login-otp': typeof AuthLoginOtpRoute
+  '/auth/register': typeof AuthRegisterRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/auth/verify-email': typeof AuthVerifyEmailRoute
+  '/auth': typeof AuthIndexRoute
   '/leaderboard/$quizId': typeof AppLeaderboardQuizIdRoute
   '/exams/$examId/chat': typeof AppExamsExamIdChatRoute
   '/exams/$examId/mock': typeof AppExamsExamIdMockRoute
@@ -123,10 +170,16 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_app': typeof AppRouteWithChildren
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/_app/exams': typeof AppExamsRouteWithChildren
   '/_app/profile': typeof AppProfileRoute
   '/_app/result': typeof AppResultRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/login-otp': typeof AuthLoginOtpRoute
+  '/auth/register': typeof AuthRegisterRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/auth/verify-email': typeof AuthVerifyEmailRoute
+  '/auth/': typeof AuthIndexRoute
   '/_app/leaderboard/$quizId': typeof AppLeaderboardQuizIdRoute
   '/_app/exams/$examId/chat': typeof AppExamsExamIdChatRoute
   '/_app/exams/$examId/mock': typeof AppExamsExamIdMockRoute
@@ -143,6 +196,12 @@ export interface FileRouteTypes {
     | '/exams'
     | '/profile'
     | '/result'
+    | '/auth/forgot-password'
+    | '/auth/login-otp'
+    | '/auth/register'
+    | '/auth/reset-password'
+    | '/auth/verify-email'
+    | '/auth/'
     | '/leaderboard/$quizId'
     | '/exams/$examId/chat'
     | '/exams/$examId/mock'
@@ -153,10 +212,15 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/auth'
     | '/exams'
     | '/profile'
     | '/result'
+    | '/auth/forgot-password'
+    | '/auth/login-otp'
+    | '/auth/register'
+    | '/auth/reset-password'
+    | '/auth/verify-email'
+    | '/auth'
     | '/leaderboard/$quizId'
     | '/exams/$examId/chat'
     | '/exams/$examId/mock'
@@ -172,6 +236,12 @@ export interface FileRouteTypes {
     | '/_app/exams'
     | '/_app/profile'
     | '/_app/result'
+    | '/auth/forgot-password'
+    | '/auth/login-otp'
+    | '/auth/register'
+    | '/auth/reset-password'
+    | '/auth/verify-email'
+    | '/auth/'
     | '/_app/leaderboard/$quizId'
     | '/_app/exams/$examId/chat'
     | '/_app/exams/$examId/mock'
@@ -184,7 +254,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
-  AuthRoute: typeof AuthRoute
+  AuthRoute: typeof AuthRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -230,6 +300,48 @@ declare module '@tanstack/react-router' {
       fullPath: '/result'
       preLoaderRoute: typeof AppResultRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/auth/': {
+      id: '/auth/'
+      path: '/'
+      fullPath: '/auth/'
+      preLoaderRoute: typeof AuthIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/forgot-password': {
+      id: '/auth/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/auth/forgot-password'
+      preLoaderRoute: typeof AuthForgotPasswordRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/login-otp': {
+      id: '/auth/login-otp'
+      path: '/login-otp'
+      fullPath: '/auth/login-otp'
+      preLoaderRoute: typeof AuthLoginOtpRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/register': {
+      id: '/auth/register'
+      path: '/register'
+      fullPath: '/auth/register'
+      preLoaderRoute: typeof AuthRegisterRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/reset-password': {
+      id: '/auth/reset-password'
+      path: '/reset-password'
+      fullPath: '/auth/reset-password'
+      preLoaderRoute: typeof AuthResetPasswordRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/verify-email': {
+      id: '/auth/verify-email'
+      path: '/verify-email'
+      fullPath: '/auth/verify-email'
+      preLoaderRoute: typeof AuthVerifyEmailRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/_app/leaderboard/$quizId': {
       id: '/_app/leaderboard/$quizId'
@@ -330,10 +442,30 @@ const AppRouteChildren: AppRouteChildren = {
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
+interface AuthRouteChildren {
+  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
+  AuthLoginOtpRoute: typeof AuthLoginOtpRoute
+  AuthRegisterRoute: typeof AuthRegisterRoute
+  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
+  AuthVerifyEmailRoute: typeof AuthVerifyEmailRoute
+  AuthIndexRoute: typeof AuthIndexRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthForgotPasswordRoute: AuthForgotPasswordRoute,
+  AuthLoginOtpRoute: AuthLoginOtpRoute,
+  AuthRegisterRoute: AuthRegisterRoute,
+  AuthResetPasswordRoute: AuthResetPasswordRoute,
+  AuthVerifyEmailRoute: AuthVerifyEmailRoute,
+  AuthIndexRoute: AuthIndexRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
-  AuthRoute: AuthRoute,
+  AuthRoute: AuthRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

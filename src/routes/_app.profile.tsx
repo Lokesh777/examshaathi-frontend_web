@@ -1,11 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { Check, GraduationCap, Loader2, LogOut, Moon, Sun } from "lucide-react";
+import { Check, GraduationCap, KeyRound, Loader2, LogOut, Moon, Sun } from "lucide-react";
 import { useAuth } from "@/lib/auth-store";
 import { useTheme } from "@/lib/theme";
 import { useExam } from "@/lib/exam-context";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ChangePasswordForm } from "@/components/organisms/ChangePasswordForm";
 
 export const Route = createFileRoute("/_app/profile")({
   component: ProfilePage,
@@ -99,6 +100,19 @@ function ProfilePage() {
             </div>
           </div>
         </button>
+      </Card>
+
+      <Card className="space-y-4 p-5">
+        <div className="flex items-center gap-3">
+          <KeyRound className="h-4 w-4 text-primary" />
+          <div>
+            <div className="text-sm font-semibold">Change password</div>
+            <div className="text-xs text-muted-foreground">
+              We'll email a verification code before the change is applied.
+            </div>
+          </div>
+        </div>
+        <ChangePasswordForm />
       </Card>
 
       <Button variant="destructive" className="w-full" onClick={logout}>
