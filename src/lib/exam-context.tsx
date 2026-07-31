@@ -8,8 +8,9 @@ import {
   type ReactNode,
 } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { api, unwrap, type Exam } from "./api";
-import { useAuth } from "./auth-store";
+import { fetchExams } from "@/services/exams/examService";
+import type { Exam } from "@/types/api";
+import { useAuth } from "@/hooks/useAuth";
 
 const KEY = "examsaathi.selectedExamId";
 
@@ -30,7 +31,7 @@ export function ExamProvider({ children }: { children: ReactNode }) {
   const { accessToken, isReady } = useAuth();
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["exams"],
-    queryFn: async () => unwrap<Exam[]>(await api.exams()),
+    queryFn: fetchExams,
     staleTime: Infinity,
     refetchOnWindowFocus: false,
     enabled: isReady && Boolean(accessToken),

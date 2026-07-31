@@ -1,7 +1,9 @@
-import { Link } from "@tanstack/react-router";
+"use client";
+
+import { Link } from "@/lib/navigation";
 import { useEffect, useState } from "react";
 import { GraduationCap, LayoutDashboard } from "lucide-react";
-import { useAuth } from "@/lib/auth-store";
+import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 
 const links = [

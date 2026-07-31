@@ -1,6 +1,8 @@
-import { Link } from "@tanstack/react-router";
+"use client";
+
+import { Link } from "@/lib/navigation";
 import { ArrowRight } from "lucide-react";
-import { useAuth } from "@/lib/auth-store";
+import { useAuth } from "@/hooks/useAuth";
 import { Reveal } from "./Reveal";
 
 export function CtaBanner() {

@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@/lib/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/atoms/Spinner";
 import { FormField } from "@/components/molecules/FormField";
-import { authApi } from "@/api/authApi";
+import { useAuth } from "@/hooks/useAuth";
 import { useApiAction } from "@/hooks/useApiAction";
 import { setPendingEmail } from "@/lib/pending-email";
 import { toast } from "sonner";
@@ -12,8 +12,9 @@ import { toast } from "sonner";
 export function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
+  const { requestPasswordReset } = useAuth();
 
-  const { run, loading, fieldErrors } = useApiAction(authApi.forgotPassword, {
+  const { run, loading, fieldErrors } = useApiAction(requestPasswordReset, {
     onSuccess: () => {
       // Neutral copy — never reveals whether the account exists.
       toast.success("If that email is registered, a reset code is on its way.");

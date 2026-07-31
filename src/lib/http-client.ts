@@ -5,9 +5,10 @@
 // - On 401 it rotates the refresh token once, retries, then gives up and
 //   dispatches "auth:unauthorized" for AuthProvider to handle
 import { AUTH_ENDPOINTS } from "@/constants/auth";
-import { getAccessToken, setAccessToken } from "./token-store";
+import { getAccessToken, setAccessToken } from "@/store/tokenStore";
+import { API_BASE_URL } from "@/lib/env";
 
-export const API_BASE_URL = "https://examshaathi-backend.onrender.com/api";
+export { API_BASE_URL };
 
 /** Endpoints that are public: no bearer, and never refresh-and-retry. */
 const PUBLIC_PATHS: readonly string[] = [

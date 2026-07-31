@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@/lib/navigation";
 import { toast } from "sonner";
 import { Loader2, ChevronLeft, ChevronRight, Timer, AlertTriangle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,8 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { api, type QuizFetchResponse, type SubmitAnswer } from "@/lib/api";
+import { submitQuizAttempt } from "@/services/quizzes/quizService";
+import type { QuizFetchResponse, SubmitAnswer } from "@/types/api";
 import { setLastAttempt } from "@/lib/result-store";
 
 function Pagination({
@@ -227,7 +228,7 @@ export function QuizPlayer({
         timeTakenSeconds,
       };
       try {
-        const res = await api.submitAttempt(quiz.quizId, payload);
+        const res = await submitQuizAttempt(quiz.quizId, payload);
         setLastAttempt(quiz.quizId, res, {
           paperTitle: paperTitle ?? quiz.title,
           timeTakenSeconds,

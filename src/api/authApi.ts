@@ -2,7 +2,7 @@
 import { apiRequest, extractAccessToken, rotateRefreshToken } from "@/lib/http-client";
 import type { User } from "@/types/api";
 import { AUTH_ENDPOINTS } from "@/constants/auth";
-import { setAccessToken } from "@/lib/token-store";
+import { setAccessToken } from "@/store/tokenStore";
 
 export type BasicResponse = { success: boolean; message?: string };
 

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link } from "@/lib/navigation";
 import { GraduationCap, ArrowLeft } from "lucide-react";
 
 export function AuthShell({

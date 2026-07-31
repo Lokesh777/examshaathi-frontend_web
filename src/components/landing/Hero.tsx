@@ -1,6 +1,8 @@
-import { Link } from "@tanstack/react-router";
+"use client";
+
+import { Link } from "@/lib/navigation";
 import { ArrowRight, BarChart3, BookOpenCheck, Sparkles, Trophy } from "lucide-react";
-import { useAuth } from "@/lib/auth-store";
+import { useAuth } from "@/hooks/useAuth";
 import { Reveal } from "./Reveal";
 
 function VisualMock() {

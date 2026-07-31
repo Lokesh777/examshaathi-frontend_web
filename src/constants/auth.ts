@@ -1,27 +1,29 @@
-// Single source of truth for auth endpoints, routes and OTP policy.
-export const AUTH_ENDPOINTS = {
-  register: "/user/register",
-  login: "/user/login",
-  verifyLoginOtp: "/user/verify-login-otp",
-  verifyEmail: "/user/verify-email",
-  resendEmailOtp: "/user/resend-otp",
-  forgotPassword: "/user/forgot-password",
-  resetPassword: "/user/reset-password",
-  changePassword: "/user/change-password",
-  logout: "/user/logout",
-  logoutAll: "/user/logout-all",
-  getMe: "/user/get-me",
-  refreshToken: "/user/refresh-token",
-} as const;
+// Auth routes and OTP policy. API paths live in src/services/api/endpoints.ts.
+import { ENDPOINTS } from "@/services/api/endpoints";
 
 export const AUTH_ROUTES = {
   login: "/auth",
   register: "/auth/register",
   verifyEmail: "/auth/verify-email",
-  loginOtp: "/auth/login-otp",
   forgotPassword: "/auth/forgot-password",
   resetPassword: "/auth/reset-password",
   changePassword: "/change-password",
+} as const;
+
+/** Legacy alias used by src/api/authApi.ts and src/lib/http-client.ts */
+export const AUTH_ENDPOINTS = {
+  register: ENDPOINTS.auth.register,
+  login: ENDPOINTS.auth.login,
+  verifyLoginOtp: "/user/verify-login-otp",
+  verifyEmail: ENDPOINTS.auth.verifyEmail,
+  resendEmailOtp: ENDPOINTS.auth.resendEmailOtp,
+  forgotPassword: ENDPOINTS.auth.forgotPassword,
+  resetPassword: ENDPOINTS.auth.resetPassword,
+  changePassword: ENDPOINTS.auth.updatePassword,
+  refreshToken: ENDPOINTS.auth.refreshToken,
+  getMe: ENDPOINTS.auth.me,
+  logout: ENDPOINTS.auth.logout,
+  logoutAll: ENDPOINTS.auth.logoutAll,
 } as const;
 
 export const OTP_LENGTH = 6;

@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@/lib/navigation";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/atoms/Spinner";
 import { PasswordInput } from "@/components/atoms/PasswordInput";
 import { FormField } from "@/components/molecules/FormField";
 import { PasswordStrengthHint } from "@/components/molecules/PasswordStrengthHint";
 import { OtpInputGroup } from "@/components/molecules/OtpInputGroup";
-import { authApi } from "@/api/authApi";
+import { useAuth } from "@/hooks/useAuth";
 import { useApiAction } from "@/hooks/useApiAction";
 import { useOtpTimer } from "@/hooks/useOtpTimer";
 import { isStrongEnough } from "@/utils/validators";
@@ -19,9 +19,15 @@ export function ResetPasswordForm({ email }: { email: string }) {
   const [confirm, setConfirm] = useState("");
   const navigate = useNavigate();
   const { remaining, canResend, restart } = useOtpTimer();
+  const { resetPassword, requestPasswordReset } = useAuth();
 
-  const { run, loading, fieldErrors } = useApiAction(authApi.resetPassword, {
-    onSuccess: () => {
+  const { run, loading, fieldErrors } = useApiAction(resetPassword, {
+    onSuccess: (res) => {
+      if (res?.accessToken && res.data) {
+        toast.success("Password updated — you're signed in!");
+        navigate({ to: "/exams", replace: true });
+        return;
+      }
       toast.success("Password updated. Please sign in again.");
       navigate({ to: "/auth", replace: true });
     },
@@ -97,7 +103,7 @@ export function ResetPasswordForm({ email }: { email: string }) {
             type="button"
             className="font-semibold text-primary hover:underline"
             onClick={async () => {
-              await authApi.forgotPassword({ email }).catch(() => null);
+              await requestPasswordReset({ email }).catch(() => null);
               toast.success("A new code is on its way.");
               setOtp("");
               restart();

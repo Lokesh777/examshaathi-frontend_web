@@ -1,4 +1,4 @@
-import type { AttemptResponse } from "./api";
+import type { AttemptResponse } from "@/types/api";
 
 export type StoredAttempt = AttemptResponse & {
   quizId: string;

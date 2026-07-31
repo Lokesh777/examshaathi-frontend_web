@@ -1,4 +1,4 @@
-import { ApiError } from "@/lib/api";
+import { ApiError } from "@/services/api/apiError";
 
 type ErrorBody = {
   message?: string;
@@ -26,6 +26,7 @@ export function fieldErrorsFrom(error: unknown): Record<string, string> {
 /** True when the API says the account email still needs verification. */
 export function isEmailUnverifiedError(error: unknown): boolean {
   if (!(error instanceof ApiError)) return false;
+  if (error.code === "EMAIL_NOT_VERIFIED") return true;
   const message = formatApiError(error).toLowerCase();
   return error.status === 403 && message.includes("verif");
 }

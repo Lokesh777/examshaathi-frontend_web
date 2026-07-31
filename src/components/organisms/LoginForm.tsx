@@ -1,41 +1,32 @@
 import { useState } from "react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@/lib/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/atoms/Spinner";
 import { PasswordInput } from "@/components/atoms/PasswordInput";
 import { FormField } from "@/components/molecules/FormField";
-import { authApi, type AuthSuccess } from "@/api/authApi";
 import { useApiAction } from "@/hooks/useApiAction";
-import { useAuth } from "@/lib/auth-store";
+import { useAuth } from "@/hooks/useAuth";
 import { isEmailUnverifiedError } from "@/utils/formatError";
 import { setPendingEmail } from "@/lib/pending-email";
 import { toast } from "sonner";
 
 export function LoginForm() {
   const [form, setForm] = useState({ email: "", password: "" });
-  const { setSession } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
-  const { run, loading, fieldErrors } = useApiAction(authApi.login, {
+  const { run, loading, fieldErrors } = useApiAction(login, {
     onSuccess: (res) => {
-      if (res && "otpRequired" in res && res.otpRequired) {
-        toast.success(res.message ?? "OTP sent to your email");
-        setPendingEmail(form.email);
-        navigate({
-          to: "/auth/login-otp",
-          search: { email: form.email, tempSessionId: res.tempSessionId },
-        });
-        return;
-      }
-      const ok = res as AuthSuccess;
-      setSession(ok.data, ok.accessToken);
+      if (!res) return;
       toast.success("Welcome back!");
       navigate({ to: "/exams", replace: true });
     },
     onError: (error) => {
       if (isEmailUnverifiedError(error)) {
-        toast.info("Please verify your email to continue.");
+        toast.info(
+          "Your email isn't verified — check your inbox for the code we just sent.",
+        );
         setPendingEmail(form.email);
         navigate({ to: "/auth/verify-email", search: { email: form.email } });
         return true;

@@ -1,12 +1,12 @@
 import { useRef, useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@/lib/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/atoms/Spinner";
 import { PasswordInput } from "@/components/atoms/PasswordInput";
 import { FormField } from "@/components/molecules/FormField";
 import { PasswordStrengthHint } from "@/components/molecules/PasswordStrengthHint";
-import { authApi } from "@/api/authApi";
+import { useAuth } from "@/hooks/useAuth";
 import { useApiAction } from "@/hooks/useApiAction";
 import { isStrongEnough } from "@/utils/validators";
 import { setPendingEmail } from "@/lib/pending-email";
@@ -16,8 +16,9 @@ export function RegisterForm() {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const submittedEmailRef = useRef("");
   const navigate = useNavigate();
+  const { register } = useAuth();
 
-  const { run, loading, fieldErrors } = useApiAction(authApi.register, {
+  const { run, loading, fieldErrors } = useApiAction(register, {
     onSuccess: () => {
       toast.success("Account created — verify your email to continue");
       const email = submittedEmailRef.current;

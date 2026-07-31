@@ -1,6 +1,20 @@
 // Domain types shared across the app. Mirrors the ExamSaathi backend contract.
 
-export type User = { id?: string; _id?: string; name: string; email: string };
+export type User = {
+  id?: string;
+  _id?: string;
+  name: string;
+  email: string;
+  verified?: boolean;
+  role?: string;
+  selectedExamId?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+/** Backend returns `_id`; older shapes used `id`. Use this everywhere. */
+export const userId = (user?: User | null): string | undefined =>
+  user?._id ?? user?.id;
 
 export interface Exam {
   _id: string;

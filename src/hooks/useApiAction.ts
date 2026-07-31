@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { ApiError } from "@/lib/api";
+import { ApiError } from "@/services/api/apiError";
 import { formatApiError, fieldErrorsFrom } from "@/utils/formatError";
 
 /**
