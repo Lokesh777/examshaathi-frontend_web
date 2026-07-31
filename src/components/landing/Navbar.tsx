@@ -2,7 +2,8 @@
 
 import { Link } from "@/lib/navigation";
 import { useEffect, useState } from "react";
-import { GraduationCap, LayoutDashboard } from "lucide-react";
+import { LayoutDashboard } from "lucide-react";
+import { BrandMark } from "@/components/atoms/BrandMark";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 
@@ -32,9 +33,7 @@ export function Navbar() {
     >
       <nav className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link to="/" className="flex items-center gap-2">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground">
-            <GraduationCap className="h-5 w-5" />
-          </span>
+          <BrandMark className="h-9 w-9 rounded-xl" />
           <span className="text-lg font-bold tracking-tight">ExamSaathi</span>
         </Link>
 

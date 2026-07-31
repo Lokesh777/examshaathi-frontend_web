@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Link } from "@/lib/navigation";
-import { GraduationCap, ArrowLeft } from "lucide-react";
+import { BrandMark } from "@/components/atoms/BrandMark";
+import { ArrowLeft } from "lucide-react";
 
 export function AuthShell({
   title,
@@ -30,9 +31,7 @@ export function AuthShell({
 
       <div className="relative mx-auto flex min-h-dvh w-full max-w-md flex-col px-6 py-10">
         <div className="mb-8 flex items-center gap-3">
-          <div className="grid h-11 w-11 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-lg ring-1 ring-primary/30">
-            <GraduationCap className="h-5 w-5" />
-          </div>
+          <BrandMark className="h-11 w-11 rounded-2xl shadow-lg ring-1 ring-primary/30" iconClassName="h-5 w-5" />
           <div>
             <div className="text-lg font-bold tracking-tight">ExamSaathi</div>
             <div className="text-xs text-muted-foreground">Your AI study partner</div>

@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import {
   BookOpen,
   FileText,
-  GraduationCap,
   Loader2,
   LogOut,
   MessageCircle,
@@ -12,6 +11,7 @@ import {
   Sun,
   UserCircle,
 } from "lucide-react";
+import { BrandMark } from "@/components/atoms/BrandMark";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/lib/theme";
@@ -40,9 +40,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   if (!isReady || !user) {
     return (
       <div className="flex min-h-dvh flex-col items-center justify-center gap-3 bg-background text-muted-foreground">
-        <div className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/10 text-primary">
-          <GraduationCap className="h-6 w-6" />
-        </div>
+        <BrandMark className="h-12 w-12 rounded-2xl bg-primary/10 text-primary" iconClassName="h-6 w-6" />
         <Loader2 className="h-4 w-4 animate-spin text-primary" />
         <div className="text-xs">Loading your workspace…</div>
       </div>
@@ -90,9 +88,7 @@ function ExamShell({
       <header className="sticky top-0 z-40 border-b border-border bg-background">
         <div className="mx-auto flex h-14 w-full max-w-6xl items-center gap-3 px-4 sm:px-6">
           <Link to="/exams" className="flex min-w-0 items-center gap-2">
-            <div className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground shadow-sm">
-              <GraduationCap className="h-4 w-4" />
-            </div>
+            <BrandMark className="h-8 w-8 rounded-lg" iconClassName="h-4 w-4" />
             <div className="min-w-0">
               {selectedExam ? (
                 <>

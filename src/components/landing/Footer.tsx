@@ -1,5 +1,6 @@
 import { Link } from "@/lib/navigation";
-import { GraduationCap, Linkedin, Mail, MessageCircle } from "lucide-react";
+import { Linkedin, Mail, MessageCircle } from "lucide-react";
+import { BrandMark } from "@/components/atoms/BrandMark";
 
 export function Footer() {
   return (
@@ -7,9 +8,7 @@ export function Footer() {
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3">
         <div>
           <div className="flex items-center gap-2">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground">
-              <GraduationCap className="h-5 w-5" />
-            </span>
+            <BrandMark className="h-9 w-9 rounded-xl" />
             <span className="text-lg font-bold tracking-tight">ExamSaathi</span>
           </div>
           <p className="mt-3 max-w-xs text-sm text-muted-foreground">
