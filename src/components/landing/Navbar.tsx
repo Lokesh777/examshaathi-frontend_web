@@ -4,6 +4,7 @@ import { Link } from "@/lib/navigation";
 import { useEffect, useState } from "react";
 import { LayoutDashboard } from "lucide-react";
 import { BrandMark } from "@/components/atoms/BrandMark";
+import { AuthActionsSkeleton } from "@/components/landing/AuthActionsSkeleton";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 
@@ -14,7 +15,7 @@ const links = [
 ];
 
 export function Navbar() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isReady } = useAuth();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -49,8 +50,10 @@ export function Navbar() {
           ))}
         </div>
 
-        <div className="flex items-center gap-2">
-          {isAuthenticated ? (
+        <div className="flex min-h-9 items-center gap-2">
+          {!isReady ? (
+            <AuthActionsSkeleton />
+          ) : isAuthenticated ? (
             <>
               <span className="hidden items-center gap-2 sm:flex">
                 <span className="grid h-8 w-8 place-items-center rounded-full bg-secondary text-xs font-bold text-secondary-foreground">

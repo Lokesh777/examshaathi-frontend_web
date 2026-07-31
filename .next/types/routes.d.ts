@@ -3,7 +3,7 @@
 
 type AppRoutes = "/" | "/auth" | "/auth/forgot-password" | "/auth/login-otp" | "/auth/register" | "/auth/reset-password" | "/auth/verify-email" | "/exams" | "/exams/[examId]/chat" | "/exams/[examId]/mock" | "/exams/[examId]/quiz/[quizId]" | "/exams/[examId]/topic-quiz/[topicId]" | "/exams/[examId]/topics" | "/exams/[examId]/topics/[topicId]/chat" | "/leaderboard/[quizId]" | "/profile" | "/result"
 type PageRoutes = never
-type LayoutRoutes = "/" | "/auth" | "/exams"
+type LayoutRoutes = "/" | "/auth"
 type RedirectRoutes = never
 type RewriteRoutes = never
 type Routes = AppRoutes | PageRoutes | LayoutRoutes | RedirectRoutes | RewriteRoutes
@@ -35,7 +35,6 @@ export type ParamsOf<Route extends Routes> = ParamMap[Route]
 interface LayoutSlotMap {
   "/": never
   "/auth": never
-  "/exams": never
 }
 
 

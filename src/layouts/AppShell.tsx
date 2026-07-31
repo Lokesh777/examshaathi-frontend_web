@@ -87,7 +87,7 @@ function ExamShell({
 
       <header className="sticky top-0 z-40 border-b border-border bg-background">
         <div className="mx-auto flex h-14 w-full max-w-6xl items-center gap-3 px-4 sm:px-6">
-          <Link to="/exams" className="flex min-w-0 items-center gap-2">
+          <Link to="/" className="flex min-w-0 items-center gap-2">
             <BrandMark className="h-8 w-8 rounded-lg" iconClassName="h-4 w-4" />
             <div className="min-w-0">
               {selectedExam ? (

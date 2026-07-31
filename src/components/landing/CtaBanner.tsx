@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Reveal } from "./Reveal";
 
 export function CtaBanner() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isReady } = useAuth();
 
   return (
     <section className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6">
@@ -16,9 +16,11 @@ export function CtaBanner() {
           style={{ background: "var(--gradient-hero)" }}
         >
           <h2 className="text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
-            Ready to start practicing?
+            {isReady && isAuthenticated ? "Keep the momentum going" : "Ready to start practicing?"}
           </h2>
-          {isAuthenticated ? (
+          {!isReady ? (
+            <div className="h-12 w-44 animate-pulse rounded-full bg-background/40" aria-hidden />
+          ) : isAuthenticated ? (
             <Link
               to="/exams"
               className="inline-flex items-center gap-2 rounded-full bg-background px-6 py-3 text-sm font-semibold text-foreground transition-transform hover:scale-[1.02]"

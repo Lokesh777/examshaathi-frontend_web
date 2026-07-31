@@ -1,3 +1,5 @@
+import { ExamsIndexRedirect } from "@/views/exams/ExamsIndexRedirect";
+
 export default function ExamsIndexPage() {
-  return null;
+  return <ExamsIndexRedirect />;
 }

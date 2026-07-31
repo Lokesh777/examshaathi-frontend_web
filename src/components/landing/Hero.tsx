@@ -4,6 +4,7 @@ import { Link } from "@/lib/navigation";
 import { ArrowRight, BarChart3, BookOpenCheck, Sparkles, Trophy } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Reveal } from "./Reveal";
+import { AuthActionsSkeleton } from "./AuthActionsSkeleton";
 
 function VisualMock() {
   return (
@@ -58,13 +59,22 @@ function VisualMock() {
 }
 
 export function Hero() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isReady } = useAuth();
 
   return (
     <section className="relative overflow-hidden">
       <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 py-16 sm:px-6 md:py-24 lg:grid-cols-2 lg:items-center">
         <Reveal>
-          {isAuthenticated ? (
+          {!isReady ? (
+            <div>
+              <div className="h-6 w-48 animate-pulse rounded-full bg-muted" />
+              <div className="mt-5 h-24 w-full animate-pulse rounded-2xl bg-muted" />
+              <div className="mt-5 h-16 w-full max-w-xl animate-pulse rounded-2xl bg-muted" />
+              <div className="mt-8">
+                <AuthActionsSkeleton className="sm:gap-3" />
+              </div>
+            </div>
+          ) : isAuthenticated ? (
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-semibold text-muted-foreground">
                 <Sparkles className="h-3.5 w-3.5 text-primary" />
@@ -77,18 +87,6 @@ export function Hero() {
                 Pick up right where you stopped — fresh questions, mock papers and your rank are
                 waiting.
               </p>
-              <dl className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                {[
-                  { term: "Continue where you left off", detail: "Resume last quiz" },
-                  { term: "Your rank on last quiz", detail: "View leaderboard" },
-                  { term: "Topics practiced", detail: "Track progress" },
-                ].map((s) => (
-                  <div key={s.term} className="rounded-2xl border border-border bg-card p-4">
-                    <dt className="text-sm font-semibold">{s.term}</dt>
-                    <dd className="mt-1 text-xs text-muted-foreground">{s.detail}</dd>
-                  </div>
-                ))}
-              </dl>
               <div className="mt-8">
                 <Link
                   to="/exams"

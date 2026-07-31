@@ -1,4 +1,4 @@
-import { Link } from "@/lib/navigation";
+import Link from "next/link";
 import { Linkedin, Mail, MessageCircle } from "lucide-react";
 import { BrandMark } from "@/components/atoms/BrandMark";
 
@@ -20,7 +20,7 @@ export function Footer() {
           <h2 className="text-sm font-semibold">Quick Links</h2>
           <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
             <li>
-              <Link to="/" className="transition-colors hover:text-foreground">
+              <Link href="/" className="transition-colors hover:text-foreground">
                 Home
               </Link>
             </li>
@@ -35,12 +35,12 @@ export function Footer() {
               </a>
             </li>
             <li>
-              <Link to="/auth" className="transition-colors hover:text-foreground">
+              <Link href="/auth" className="transition-colors hover:text-foreground">
                 Login
               </Link>
             </li>
             <li>
-              <Link to="/auth/register" className="transition-colors hover:text-foreground">
+              <Link href="/auth/register" className="transition-colors hover:text-foreground">
                 Signup
               </Link>
             </li>

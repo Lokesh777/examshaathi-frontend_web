@@ -1,3 +1,5 @@
+"use client";
+
 // The one place components touch auth: session state + every auth action.
 // Components never import authService or axios directly.
 import { useMemo } from "react";
