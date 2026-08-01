@@ -1,10 +1,11 @@
 // Low-level HTTP client for the ExamSaathi backend.
 // - Attaches the in-memory access token as `Authorization: Bearer …`
 //   (never on the public auth endpoints, where a stale token is rejected)
-// - Sends cookies so the httpOnly refresh token travels where the browser allows
+// - Sends the refresh cookie only on login / refresh / logout routes
 // - On 401 it rotates the refresh token once, retries, then gives up and
 //   dispatches "auth:unauthorized" for AuthProvider to handle
 import { AUTH_ENDPOINTS } from "@/constants/auth";
+import { isAuthCookiePath } from "@/services/api/endpoints";
 import { getAccessToken, setAccessToken } from "@/store/tokenStore";
 import { API_BASE_URL } from "@/lib/env";
 
@@ -103,7 +104,7 @@ export async function apiRequest<T>(
     res = await fetch(`${API_BASE_URL}${path}`, {
       ...init,
       headers,
-      credentials: "include",
+      credentials: isAuthCookiePath(path) ? "include" : "omit",
     });
   } catch {
     // No HTTP response at all — offline, backend asleep, or blocked by CORS.

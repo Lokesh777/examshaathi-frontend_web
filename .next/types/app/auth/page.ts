@@ -1,8 +1,8 @@
-// File: D:\develoment\fullstack_projects\ExamSaathi\frontend\src\app\(dashboard)\profile\page.tsx
-import * as entry from '../../../../../src/app/(dashboard)/profile/page.js'
+// File: D:\develoment\fullstack_projects\ExamSaathi\frontend\src\app\auth\page.tsx
+import * as entry from '../../../../src/app/auth/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
-type TEntry = typeof import('../../../../../src/app/(dashboard)/profile/page.js')
+type TEntry = typeof import('../../../../src/app/auth/page.js')
 
 type SegmentParams<T extends Object = any> = T extends Record<string, any>
   ? { [K in keyof T]: T[K] extends string ? string | string[] | undefined : never }

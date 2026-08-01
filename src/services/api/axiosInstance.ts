@@ -1,7 +1,7 @@
 // The single configured axios instance. Every request/response in the app goes
 // through these interceptors, so all API traffic is logged automatically.
 import axios from "axios";
-import { ENDPOINTS, isPublicAuthPath } from "./endpoints";
+import { ENDPOINTS, isAuthCookiePath, isPublicAuthPath } from "./endpoints";
 import { ApiError, toApiError } from "./apiError";
 import { logApi, maskToken } from "./apiLogger";
 import {
@@ -16,12 +16,15 @@ export { API_BASE_URL };
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
-  withCredentials: true, // sends/receives the httpOnly refreshToken cookie
+  withCredentials: false,
   headers: { "Content-Type": "application/json" },
 });
 
 // ---- REQUEST: attach access token + log every outgoing call ----
 api.interceptors.request.use((config) => {
+  if (isAuthCookiePath(config.url)) {
+    config.withCredentials = true;
+  }
   const token = getAccessToken();
   const isPublic = isPublicAuthPath(config.url);
   if (token && !isPublic) {
@@ -108,15 +111,12 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !isPublic) {
       if (!originalRequest._retry) {
         originalRequest._retry = true;
-        console.warn("[AUTH] 401 — attempting silent refresh for", originalRequest?.url);
         const token = await refreshAccessToken();
-        console.warn("[AUTH] refresh result:", maskToken(token));
         if (token) {
           originalRequest.headers.Authorization = `Bearer ${token}`;
           return api(originalRequest);
         }
       }
-      console.warn("[AUTH] refresh failed — clearing session and redirecting to login");
       clearAccessToken();
       if (typeof window !== "undefined") {
         window.dispatchEvent(new CustomEvent("auth:unauthorized"));

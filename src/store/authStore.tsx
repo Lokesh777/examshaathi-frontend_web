@@ -10,7 +10,13 @@ import {
   logoutUserFromAllDevices,
   refreshSessionToken,
 } from "@/services/auth/authService";
-import { clearAccessToken, getAccessToken, setAccessToken, subscribeAccessToken } from "@/store/tokenStore";
+import {
+  clearAccessToken,
+  getAccessToken,
+  purgeLegacyStoredAccessToken,
+  setAccessToken,
+  subscribeAccessToken,
+} from "@/store/tokenStore";
 import { AUTH_ROUTES } from "@/constants/auth";
 
 export type AuthSessionState = {
@@ -44,6 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Boot: the token is memory-only, so a reload rehydrates the session from
     // the httpOnly refresh cookie, then loads the profile.
     (async () => {
+      purgeLegacyStoredAccessToken();
       try {
         const token = getAccessToken() ?? (await refreshSessionToken());
         if (token) {

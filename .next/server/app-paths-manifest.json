@@ -1,8 +1,9 @@
 {
+  "/icon.svg/route": "app/icon.svg/route.js",
+  "/page": "app/page.js",
   "/_not-found/page": "app/_not-found/page.js",
   "/(dashboard)/exams/page": "app/(dashboard)/exams/page.js",
-  "/(dashboard)/profile/page": "app/(dashboard)/profile/page.js",
   "/(dashboard)/exams/[examId]/topics/page": "app/(dashboard)/exams/[examId]/topics/page.js",
-  "/(dashboard)/exams/[examId]/mock/page": "app/(dashboard)/exams/[examId]/mock/page.js",
-  "/(dashboard)/exams/[examId]/chat/page": "app/(dashboard)/exams/[examId]/chat/page.js"
+  "/auth/page": "app/auth/page.js",
+  "/(dashboard)/exams/[examId]/mock/page": "app/(dashboard)/exams/[examId]/mock/page.js"
 }

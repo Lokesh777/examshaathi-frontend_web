@@ -31,7 +31,6 @@ function post<T>(path: string, body?: unknown) {
 
 /** Stores the access token in memory when the response carries one. */
 function captureToken<T>(res: T): T {
-  console.log(res, "items----")
   const token = extractAccessToken(res);
   if (token) setAccessToken(token);
   return res;

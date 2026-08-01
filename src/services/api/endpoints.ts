@@ -45,3 +45,21 @@ export const PUBLIC_AUTH_PATHS: readonly string[] = [
 
 export const isPublicAuthPath = (url?: string) =>
   Boolean(url) && PUBLIC_AUTH_PATHS.some((p) => url === p || url!.startsWith(`${p}?`));
+
+/**
+ * Auth routes that need the HttpOnly refresh cookie (set, rotate, or clear).
+ * All other API calls use only the in-memory Bearer token — no cookie sent.
+ */
+export const AUTH_COOKIE_PATHS: readonly string[] = [
+  ENDPOINTS.auth.login,
+  ENDPOINTS.auth.verifyEmail,
+  ENDPOINTS.auth.resetPassword,
+  ENDPOINTS.auth.refreshToken,
+  ENDPOINTS.auth.logout,
+  ENDPOINTS.auth.logoutAll,
+  "/user/verify-login-otp",
+];
+
+export const isAuthCookiePath = (url?: string) =>
+  Boolean(url) &&
+  AUTH_COOKIE_PATHS.some((p) => url === p || url!.startsWith(`${p}?`));

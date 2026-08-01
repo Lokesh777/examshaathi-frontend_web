@@ -1,17 +1,6 @@
-// Access token is kept in memory AND mirrored to localStorage so it survives
-// reloads / the 401 redirect (the refresh cookie is blocked in the preview
-// iframe, so memory-only loses the session on every navigation).
-const STORAGE_KEY = "examsaathi.accessToken";
-
-function readStored(): string | null {
-  try {
-    return typeof localStorage !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null;
-  } catch {
-    return null;
-  }
-}
-
-let accessToken: string | null = readStored();
+// Access token lives in memory only (never localStorage — XSS-safe).
+// After reload or expiry, POST /user/refresh-token uses the HttpOnly refresh cookie.
+let accessToken: string | null = null;
 
 type AccessTokenListener = (token: string | null) => void;
 const listeners = new Set<AccessTokenListener>();
@@ -23,28 +12,25 @@ export function subscribeAccessToken(listener: AccessTokenListener): () => void 
 }
 
 export function getAccessToken(): string | null {
-  if (!accessToken) accessToken = readStored();
   return accessToken;
 }
 
 export function setAccessToken(token: string | null): void {
   accessToken = token;
-  console.log(
-    `%c[TOKEN] ${token ? "stored" : "cleared"}`,
-    "color:#a855f7;font-weight:bold",
-    token ? `${token.slice(0, 16)}…${token.slice(-6)}` : null,
-  );
-  try {
-    if (typeof localStorage !== "undefined") {
-      if (token) localStorage.setItem(STORAGE_KEY, token);
-      else localStorage.removeItem(STORAGE_KEY);
-    }
-  } catch {
-    /* ignore */
-  }
   listeners.forEach((listener) => listener(token));
 }
 
 export function clearAccessToken(): void {
   setAccessToken(null);
+}
+
+/** Removes legacy token persisted before the memory-only migration. */
+export function purgeLegacyStoredAccessToken(): void {
+  try {
+    if (typeof localStorage !== "undefined") {
+      localStorage.removeItem("examsaathi.accessToken");
+    }
+  } catch {
+    /* ignore */
+  }
 }

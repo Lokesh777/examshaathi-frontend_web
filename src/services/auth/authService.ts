@@ -33,7 +33,6 @@ export async function registerUser(payload: RegisterRequest): Promise<RegisterRe
  */
 export async function loginUser(payload: LoginRequest): Promise<LoginResponse> {
   const { data } = await api.post<LoginResponse>(ENDPOINTS.auth.login, payload);
-  console.log(data, "items------------data", data.accessToken);
   if (data.accessToken) setAccessToken(data.accessToken);
   return data;
 }
