@@ -30,6 +30,18 @@ export const ENDPOINTS = {
     topicChat: (examId: string, topicId: string) =>
       `/chat/exams/${examId}/topics/${topicId}/chat`,
   },
+  officialPapers: {
+    list: (examId: string) => `/official-papers/exams/${examId}`,
+    sync: (examId: string) => `/official-papers/admin/exams/${examId}/sync`,
+    syncLinks: (examId: string) => `/official-papers/admin/exams/${examId}/sync/links`,
+    syncExtract: (examId: string) => `/official-papers/admin/exams/${examId}/sync/extract`,
+    syncCapabilities: (examId: string) => `/official-papers/admin/exams/${examId}/sync/capabilities`,
+    syncStatus: (jobId: string) => `/official-papers/admin/sync/${jobId}`,
+    extractImageQuestions: (catalogId: string) =>
+      `/official-papers/admin/catalog/${catalogId}/extract-image-questions`,
+    catalogQuestionMedia: (catalogId: string) =>
+      `/official-papers/admin/catalog/${catalogId}/question-media`,
+  },
 } as const;
 
 /** Public auth paths: never send a bearer, never refresh-and-retry on 401. */

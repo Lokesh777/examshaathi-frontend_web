@@ -32,12 +32,27 @@ export interface Topic {
   patternSection: string | null;
 }
 
+export interface QuestionMediaItem {
+  type?: "image";
+  url: string;
+  alt?: string;
+}
+
+export interface OptionMediaItem {
+  letter: "A" | "B" | "C" | "D";
+  url: string;
+  alt?: string;
+}
+
 export interface QuizQuestion {
   _id: string;
   topicId?: string;
   questionText: string;
   options: string[];
   difficulty: "easy" | "moderate" | "hard";
+  questionMedia?: QuestionMediaItem | null;
+  optionMedia?: OptionMediaItem[];
+  answerMode?: "text" | "letter";
 }
 
 export interface QuizFetchResponse {
@@ -45,6 +60,7 @@ export interface QuizFetchResponse {
   quizId: string;
   title?: string;
   totalQuestions?: number;
+  durationMinutes?: number | null;
   questions: QuizQuestion[];
   shortfalls?: { topic: string; needed: number; available: number }[];
 }
@@ -61,6 +77,9 @@ export interface AttemptResult {
   correctAnswer: string;
   explanation: string;
   referenceLinks: string[];
+  questionMedia?: QuestionMediaItem | null;
+  optionMedia?: OptionMediaItem[];
+  answerMode?: "text" | "letter";
   selectedOption: string | null;
   isCorrect: boolean;
 }
@@ -103,6 +122,116 @@ export interface RealPaper {
   lastScorePercent?: number | null;
   lastAttemptId?: string | null;
   lastAttemptedAt?: string;
+}
+
+export interface ProviderAttempt {
+  provider: string;
+  model: string;
+  stage: string;
+  success: boolean;
+  error?: string | null;
+  questionCount?: number;
+  at: string;
+}
+
+export interface OfficialPaper {
+  catalogId?: string;
+  quizId: string | null;
+  title: string;
+  year: number;
+  setCode?: string;
+  status?: "pending" | "linked" | "extracting" | "extracted" | "published" | "failed";
+  currentStage?: string | null;
+  extractionMethod?: string | null;
+  extractionLabel?: string | null;
+  extractionModel?: string | null;
+  activeProvider?: string | null;
+  activeModel?: string | null;
+  questionPdfUrl?: string;
+  answerKeyPdfUrl?: string | null;
+  totalQuestions?: number;
+  durationMinutes?: number;
+  publishedAt?: string;
+  attempted?: boolean;
+  lastScore?: number | null;
+  lastScorePercent?: number | null;
+  lastAttemptId?: string | null;
+  errorMessage?: string | null;
+  stageLogs?: SyncStageLog[];
+  providerAttempts?: ProviderAttempt[];
+  paperData?: Record<string, unknown> | null;
+  stats?: {
+    extracted?: number;
+    matched?: number;
+    inserted?: number;
+    skipped?: number;
+    missingCount?: number;
+    expectedQuestionCount?: number;
+  };
+  pageProgress?: PageProgress | null;
+}
+
+export interface SyncStageLog {
+  stage: string;
+  message: string;
+  level: "info" | "warn" | "error";
+  provider?: string | null;
+  at: string;
+}
+
+export interface AiProviderCapability {
+  id: string;
+  label: string;
+  model: string;
+  available: boolean;
+  reason?: string | null;
+}
+
+export interface AiCapabilities {
+  providerOrder: string[];
+  providers: AiProviderCapability[];
+  popplerConfigured: boolean;
+}
+
+export interface PageProgress {
+  current: number;
+  total: number;
+  phase?: string | null;
+  questionsFound?: number;
+  updatedAt?: string;
+}
+
+export interface SyncJobLivePaper {
+  catalogId: string;
+  title: string;
+  status?: string;
+  currentStage?: string | null;
+  pageProgress?: PageProgress | null;
+  stats?: OfficialPaper["stats"];
+  stageLogs?: SyncStageLog[];
+}
+
+export interface SyncJobStatus {
+  _id: string;
+  status: "running" | "completed" | "failed";
+  phase?: "fetch_links" | "extract" | "full";
+  currentStage?: string | null;
+  activeProvider?: string | null;
+  activeModel?: string | null;
+  preferredProvider?: string | null;
+  pageProgress?: PageProgress | null;
+  livePaper?: SyncJobLivePaper | null;
+  progress: {
+    total: number;
+    completed: number;
+    published: number;
+    failed: number;
+  };
+  currentPaper?: string | null;
+  stageLogs?: SyncStageLog[];
+  errors?: string[];
+  startedAt?: string;
+  finishedAt?: string | null;
 }
 
 export interface LeaderboardRow {

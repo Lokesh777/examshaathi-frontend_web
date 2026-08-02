@@ -1,11 +1,14 @@
 "use client";
 
 import { CheckCircle2, XCircle, Trophy, ChevronDown, Clock, FileText } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { QuestionMedia } from "@/components/question-media";
 import { getLastAttempt } from "@/lib/result-store";
 import { Link, Navigate } from "@/lib/navigation";
+import type { AttemptResult } from "@/types/api";
 
 export function ResultPage() {
   const attempt = getLastAttempt();
@@ -115,23 +118,10 @@ function Stat({ label, value, tint }: { label: string; value: number; tint: stri
   );
 }
 
-function ReviewItem({
-  index,
-  r,
-}: {
-  index: number;
-  r: {
-    questionId: string;
-    questionText: string;
-    options: string[];
-    correctAnswer: string;
-    explanation: string;
-    referenceLinks: string[];
-    selectedOption: string | null;
-    isCorrect: boolean;
-  };
-}) {
+function ReviewItem({ index, r }: { index: number; r: AttemptResult }) {
   const [open, setOpen] = useState(false);
+  const letterMode = r.answerMode === "letter" || (r.optionMedia?.length ?? 0) > 0;
+
   return (
     <Card className="p-4">
       <button
@@ -149,14 +139,29 @@ function ReviewItem({
         <div className="min-w-0 flex-1">
           <div className="text-xs text-muted-foreground">Q{index + 1}</div>
           <div className="text-sm font-semibold">{r.questionText}</div>
+          {r.questionMedia?.url && (
+            <QuestionMedia
+              url={r.questionMedia.url}
+              alt={r.questionMedia.alt || "Question diagram"}
+              className="mt-2"
+            />
+          )}
         </div>
         <ChevronDown className={`h-4 w-4 shrink-0 transition ${open ? "rotate-180" : ""}`} />
       </button>
       {open && (
         <div className="mt-3 space-y-2 border-t border-border pt-3 text-sm">
           {r.options.map((opt, i) => {
-            const isCorrect = opt === r.correctAnswer;
-            const isSelected = opt === r.selectedOption;
+            const letter = String.fromCharCode(65 + i);
+            const optionImage = r.optionMedia?.find((m) => m.letter === letter);
+            const isCorrect =
+              letterMode
+                ? r.correctAnswer === letter || r.correctAnswer === opt
+                : opt === r.correctAnswer;
+            const isSelected =
+              letterMode
+                ? r.selectedOption === letter || r.selectedOption === opt
+                : opt === r.selectedOption;
             return (
               <div
                 key={i}
@@ -168,7 +173,24 @@ function ReviewItem({
                       : "border-border text-muted-foreground"
                 }`}
               >
-                {opt}
+                <div className="flex items-start gap-2">
+                  <span className="font-bold">{letter}.</span>
+                  {optionImage?.url ? (
+                    <span className="block overflow-hidden rounded-md border bg-muted/20">
+                      <Image
+                        src={optionImage.url}
+                        alt={optionImage.alt || `Option ${letter}`}
+                        width={320}
+                        height={160}
+                        loading="lazy"
+                        className="h-auto w-full max-h-40 object-contain"
+                        unoptimized
+                      />
+                    </span>
+                  ) : (
+                    <span>{opt}</span>
+                  )}
+                </div>
                 {isCorrect && " ✓"}
                 {isSelected && !isCorrect && " (your answer)"}
               </div>

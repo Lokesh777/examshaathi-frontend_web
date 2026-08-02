@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import {
+  Archive,
   BookOpen,
   FileText,
   Loader2,
@@ -107,6 +108,7 @@ function ExamShell({
             <nav className="ml-4 hidden items-center gap-1 rounded-full border border-border bg-secondary/60 p-1 md:flex">
               <NavPill to="/exams/$examId/topics" examId={selectedExam._id} icon={BookOpen} label="Topics" pathname={pathname} match="topics" />
               <NavPill to="/exams/$examId/mock" examId={selectedExam._id} icon={FileText} label="Real Paper" pathname={pathname} match="mock" />
+              <NavPill to="/exams/$examId/old-papers" examId={selectedExam._id} icon={Archive} label="Old Papers" pathname={pathname} match="old-papers" />
               <NavPill to="/exams/$examId/chat" examId={selectedExam._id} icon={MessageCircle} label="AI Tutor" pathname={pathname} match="chat" />
             </nav>
           )}
@@ -190,10 +192,11 @@ function ExamShell({
 
         {selectedExam && selectedExam.syllabusStatus === "ready" && (
           <nav className="sticky bottom-0 z-40 h-16 border-t border-border bg-background md:hidden">
-            <div className="mx-auto grid h-full max-w-6xl grid-cols-3">
+            <div className="mx-auto grid h-full max-w-6xl grid-cols-4">
               <BottomTab to="/exams/$examId/topics" examId={selectedExam._id} icon={BookOpen} label="Topics" pathname={pathname} match="topics" />
-              <BottomTab to="/exams/$examId/mock" examId={selectedExam._id} icon={FileText} label="Real Paper" pathname={pathname} match="mock" />
-              <BottomTab to="/exams/$examId/chat" examId={selectedExam._id} icon={MessageCircle} label="AI Tutor" pathname={pathname} match="chat" />
+              <BottomTab to="/exams/$examId/mock" examId={selectedExam._id} icon={FileText} label="Mock" pathname={pathname} match="mock" />
+              <BottomTab to="/exams/$examId/old-papers" examId={selectedExam._id} icon={Archive} label="Old" pathname={pathname} match="old-papers" />
+              <BottomTab to="/exams/$examId/chat" examId={selectedExam._id} icon={MessageCircle} label="AI" pathname={pathname} match="chat" />
             </div>
           </nav>
         )}
@@ -238,7 +241,7 @@ function BottomTab({
   pathname,
   match,
 }: {
-  to: "/exams/$examId/topics" | "/exams/$examId/mock" | "/exams/$examId/chat";
+  to: "/exams/$examId/topics" | "/exams/$examId/mock" | "/exams/$examId/old-papers" | "/exams/$examId/chat";
   examId: string;
   icon: typeof BookOpen;
   label: string;
@@ -268,7 +271,7 @@ function NavPill({
   pathname,
   match,
 }: {
-  to: "/exams/$examId/topics" | "/exams/$examId/mock" | "/exams/$examId/chat";
+  to: "/exams/$examId/topics" | "/exams/$examId/mock" | "/exams/$examId/old-papers" | "/exams/$examId/chat";
   examId: string;
   icon: typeof BookOpen;
   label: string;

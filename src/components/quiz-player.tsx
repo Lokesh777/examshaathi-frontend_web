@@ -16,6 +16,8 @@ import {
 import { submitQuizAttempt } from "@/services/quizzes/quizService";
 import type { QuizFetchResponse, SubmitAnswer } from "@/types/api";
 import { setLastAttempt } from "@/lib/result-store";
+import { QuestionMedia } from "@/components/question-media";
+import Image from "next/image";
 
 function Pagination({
   total,
@@ -98,10 +100,12 @@ export function QuizPlayer({
   const [submitting, setSubmitting] = useState(false);
 
   const total = quiz.questions.length;
-  const totalSeconds = useMemo(
-    () => Math.round(total * MIN_PER_Q) * 60,
-    [total],
-  );
+  const totalSeconds = useMemo(() => {
+    if (quiz.durationMinutes != null && quiz.durationMinutes > 0) {
+      return quiz.durationMinutes * 60;
+    }
+    return Math.round(total * MIN_PER_Q) * 60;
+  }, [total, quiz.durationMinutes]);
 
   // Resume-protected start time (per quizId, in localStorage).
   const [startedAt] = useState<number>(() => {
@@ -335,14 +339,27 @@ export function QuizPlayer({
           <div className="whitespace-pre-wrap text-base font-semibold leading-relaxed">
             {q.questionText}
           </div>
+          {q.questionMedia?.url && (
+            <QuestionMedia
+              url={q.questionMedia.url}
+              alt={q.questionMedia.alt || "Question diagram"}
+              className="mt-3"
+            />
+          )}
           <div className="mt-4 space-y-2">
             {q.options.map((opt, i) => {
-              const selected = answers[q._id] === opt;
+              const letter = String.fromCharCode(65 + i);
+              const optionImage = q.optionMedia?.find((m) => m.letter === letter);
+              const pickValue =
+                q.answerMode === "letter" || q.optionMedia?.length
+                  ? letter
+                  : opt;
+              const selected = answers[q._id] === pickValue;
               return (
                 <button
                   key={i}
                   type="button"
-                  onClick={() => pick(opt)}
+                  onClick={() => pick(pickValue)}
                   disabled={timeUp}
                   className={`flex w-full items-start gap-3 rounded-xl border p-3 text-left text-sm transition ${
                     selected
@@ -355,9 +372,25 @@ export function QuizPlayer({
                       selected ? "border-primary bg-primary text-primary-foreground" : "border-border"
                     }`}
                   >
-                    {String.fromCharCode(65 + i)}
+                    {letter}
                   </span>
-                  <span className="flex-1">{opt}</span>
+                  <span className="flex-1 min-w-0">
+                    {optionImage?.url ? (
+                      <span className="block overflow-hidden rounded-md border bg-muted/20">
+                        <Image
+                          src={optionImage.url}
+                          alt={optionImage.alt || `Option ${letter}`}
+                          width={320}
+                          height={160}
+                          loading="lazy"
+                          className="h-auto w-full max-h-40 object-contain"
+                          unoptimized
+                        />
+                      </span>
+                    ) : (
+                      opt
+                    )}
+                  </span>
                 </button>
               );
             })}
