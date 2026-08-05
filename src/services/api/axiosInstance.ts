@@ -9,6 +9,7 @@ import {
   getAccessToken,
   setAccessToken,
 } from "@/store/tokenStore";
+import { refreshSessionAccessToken } from "@/services/auth/sessionRefresh";
 
 import { API_BASE_URL } from "@/lib/env";
 
@@ -41,37 +42,17 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-/** Extracts an access token from the shapes the backend uses. */
-export function extractAccessToken(payload: unknown): string | null {
-  if (!payload || typeof payload !== "object") return null;
-  const root = payload as Record<string, unknown>;
-  const nested = (root.data ?? {}) as Record<string, unknown>;
-  return (
-    (typeof root.accessToken === "string" && root.accessToken) ||
-    (typeof root.token === "string" && root.token) ||
-    (typeof nested.accessToken === "string" && nested.accessToken) ||
-    null
-  );
-}
-
+export { extractAccessToken } from "@/services/auth/tokenExtract";
 let refreshInFlight: Promise<string | null> | null = null;
 
 /** Rotates the refresh cookie once and returns a fresh access token (or null). */
 export function refreshAccessToken(): Promise<string | null> {
-  refreshInFlight ??= axios
-    .post(`${API_BASE_URL}${ENDPOINTS.auth.refreshToken}`, null, {
-      withCredentials: true,
-    })
-    .then((res) => {
-      const token = extractAccessToken(res.data);
-      // Only overwrite on success: a blocked cross-site cookie must not wipe a
-      // perfectly good token captured at login.
-      if (token) setAccessToken(token);
-      return token;
-    })
-    .catch(() => null)
+  refreshInFlight ??= refreshSessionAccessToken()
+    .then((result) => (result.ok ? result.token : null))
     .finally(() => {
-      setTimeout(() => (refreshInFlight = null), 0);
+      setTimeout(() => {
+        refreshInFlight = null;
+      }, 0);
     });
   return refreshInFlight;
 }
@@ -111,15 +92,23 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !isPublic) {
       if (!originalRequest._retry) {
         originalRequest._retry = true;
-        const token = await refreshAccessToken();
-        if (token) {
-          originalRequest.headers.Authorization = `Bearer ${token}`;
+        const result = await refreshSessionAccessToken();
+        if (result.ok) {
+          originalRequest.headers.Authorization = `Bearer ${result.token}`;
           return api(originalRequest);
         }
-      }
-      clearAccessToken();
-      if (typeof window !== "undefined") {
-        window.dispatchEvent(new CustomEvent("auth:unauthorized"));
+        // Only log out when refresh explicitly rejected — not on network blips.
+        if (result.reason === "auth") {
+          clearAccessToken();
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("auth:unauthorized"));
+          }
+        }
+      } else {
+        clearAccessToken();
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("auth:unauthorized"));
+        }
       }
     }
 

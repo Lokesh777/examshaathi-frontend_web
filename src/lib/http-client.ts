@@ -7,6 +7,8 @@
 import { AUTH_ENDPOINTS } from "@/constants/auth";
 import { isAuthCookiePath } from "@/services/api/endpoints";
 import { getAccessToken, setAccessToken } from "@/store/tokenStore";
+import { refreshSessionAccessToken } from "@/services/auth/sessionRefresh";
+import { extractAccessToken } from "@/services/auth/tokenExtract";
 import { API_BASE_URL } from "@/lib/env";
 
 export { API_BASE_URL };
@@ -38,42 +40,12 @@ export class ApiError extends Error {
 }
 
 /** Pulls an access token out of the shapes the backend uses. */
-export function extractAccessToken(payload: unknown): string | null {
-  if (!payload || typeof payload !== "object") return null;
-  const root = payload as Record<string, unknown>;
-  const nested = (root.data ?? {}) as Record<string, unknown>;
-  return (
-    (typeof root.accessToken === "string" && root.accessToken) ||
-    (typeof root.token === "string" && root.token) ||
-    (typeof nested.accessToken === "string" && nested.accessToken) ||
-    null
-  );
-}
-
-let refreshInFlight: Promise<string | null> | null = null;
+export { extractAccessToken } from "@/services/auth/tokenExtract";
 
 /** Rotates the refresh cookie and returns a fresh access token (or null). */
 export async function rotateRefreshToken(): Promise<string | null> {
-  refreshInFlight ??= (async () => {
-    try {
-      const res = await fetch(`${API_BASE_URL}${AUTH_ENDPOINTS.refreshToken}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      });
-      if (!res.ok) return null;
-      const token = extractAccessToken(await res.json());
-      // Only overwrite on success: a blocked cross-site cookie must not wipe
-      // a perfectly good token captured at login.
-      if (token) setAccessToken(token);
-      return token;
-    } catch {
-      return null;
-    } finally {
-      setTimeout(() => (refreshInFlight = null), 0);
-    }
-  })();
-  return refreshInFlight;
+  const result = await refreshSessionAccessToken();
+  return result.ok ? result.token : null;
 }
 
 async function parseBody(res: Response): Promise<unknown> {
@@ -119,12 +91,19 @@ export async function apiRequest<T>(
 
   if (res.status === 401) {
     if (!opts.retried && !isPublicPath(path)) {
-      const fresh = await rotateRefreshToken();
-      if (fresh) return apiRequest<T>(path, init, { retried: true });
-    }
-    setAccessToken(null);
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new CustomEvent("auth:unauthorized"));
+      const result = await refreshSessionAccessToken();
+      if (result.ok) return apiRequest<T>(path, init, { retried: true });
+      if (result.reason === "auth") {
+        setAccessToken(null);
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("auth:unauthorized"));
+        }
+      }
+    } else if (!isPublicPath(path)) {
+      setAccessToken(null);
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("auth:unauthorized"));
+      }
     }
     throw new ApiError("Unauthorized", 401, body);
   }

@@ -55,7 +55,7 @@ export function TopicQuizPage() {
     queryFn: () => listTopicQuizzes(examId, topicId),
     staleTime: 0,
     refetchOnMount: "always",
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
   const quizzes = quizzesQ.data ?? [];
 

@@ -11,6 +11,10 @@ import {
   refreshSessionToken,
 } from "@/services/auth/authService";
 import {
+  scheduleProactiveSessionRefresh,
+  subscribeCrossTabAccessToken,
+} from "@/services/auth/sessionRefresh";
+import {
   clearAccessToken,
   getAccessToken,
   purgeLegacyStoredAccessToken,
@@ -43,6 +47,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Mirror the in-memory token (including silent 401 refreshes) into state.
   useEffect(() => subscribeAccessToken(setToken), []);
+
+  // Other tabs: share access token after one tab refreshes the session.
+  useEffect(() => subscribeCrossTabAccessToken(() => undefined), []);
+
+  // When user returns to tab, refresh access token before API calls 401.
+  useEffect(() => {
+    return scheduleProactiveSessionRefresh(Boolean(user));
+  }, [user]);
 
   useEffect(() => {
     let cancelled = false;
