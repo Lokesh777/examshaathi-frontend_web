@@ -21,7 +21,27 @@ export interface Exam {
   name: string;
   slug: string;
   syllabusStatus: "pending" | "fetching" | "ready";
-  pattern?: { totalQuestions?: number };
+  pattern?: {
+    totalQuestions?: number;
+    totalMarks?: number;
+    marksPerQuestion?: number;
+    durationMinutes?: number;
+    passingMarksPercent?: number;
+    examMode?: string;
+    negativeMarkingFraction?: number;
+    officialSyllabusUrl?: string;
+    sourceLinks?: string[];
+    sections?: { topicName: string; questionCount: number; marks: number }[];
+  };
+  questionProfile?: {
+    optionCount?: number;
+    markingScheme?: {
+      correct?: number;
+      incorrect?: number;
+      unanswered?: number;
+      disqualifyBlankPercent?: number | null;
+    };
+  };
 }
 
 export interface Topic {
@@ -30,7 +50,20 @@ export interface Topic {
   order: number;
   weightage: number | null;
   patternSection: string | null;
+  questionCount?: number;
+  quizzesSolved?: number;
+  readinessTarget?: number;
+  readinessPercent?: number;
+  showProgress?: boolean;
 }
+
+export type BankShortfall = {
+  topicId?: string;
+  topic: string;
+  needed: number;
+  available: number;
+  deficit?: number;
+};
 
 export interface QuestionMediaItem {
   type?: "image";
@@ -39,10 +72,18 @@ export interface QuestionMediaItem {
 }
 
 export interface OptionMediaItem {
-  letter: "A" | "B" | "C" | "D";
+  letter: "A" | "B" | "C" | "D" | "E";
   url: string;
   alt?: string;
 }
+
+export type QuestionType =
+  | "direct"
+  | "statement"
+  | "matching"
+  | "assertion_reason"
+  | "chronology"
+  | "applied_pedagogy";
 
 export interface QuizQuestion {
   _id: string;
@@ -50,6 +91,7 @@ export interface QuizQuestion {
   questionText: string;
   options: string[];
   difficulty: "easy" | "moderate" | "hard";
+  questionType?: QuestionType;
   questionMedia?: QuestionMediaItem | null;
   optionMedia?: OptionMediaItem[];
   answerMode?: "text" | "letter";
@@ -62,7 +104,7 @@ export interface QuizFetchResponse {
   totalQuestions?: number;
   durationMinutes?: number | null;
   questions: QuizQuestion[];
-  shortfalls?: { topic: string; needed: number; available: number }[];
+  shortfalls?: BankShortfall[];
 }
 
 export interface SubmitAnswer {
@@ -88,12 +130,18 @@ export interface AttemptSummary {
   correctAnswers: number;
   wrongAnswers: number;
   unansweredQuestions: number;
+  notAttemptedCount?: number;
+  blankPercent?: string;
   marksPerCorrect: number;
   negativeMarkPerWrong: number;
+  negativeMarkPerUnanswered?: number;
   negativeMarksDeducted: number;
+  disqualificationWarning?: string | null;
   score: number;
   totalMarks: number;
   scorePercent: number;
+  passingMarksPercent?: number | null;
+  passed?: boolean | null;
 }
 
 export interface AttemptResponse {
@@ -113,6 +161,9 @@ export interface RealPaper {
   quizId?: string;
   title: string;
   createdAt?: string;
+  createdBy?: string | null;
+  isOwner?: boolean;
+  canDelete?: boolean;
   totalQuestions?: number;
   attempts?: number;
   attempted?: boolean;
@@ -122,6 +173,18 @@ export interface RealPaper {
   lastScorePercent?: number | null;
   lastAttemptId?: string | null;
   lastAttemptedAt?: string;
+}
+
+export interface BankQuestionSummary {
+  _id: string;
+  questionText: string;
+  questionType?: string;
+  source?: string;
+  pattern?: string;
+  difficulty?: string;
+  createdBy?: string | null;
+  createdAt?: string;
+  isOwner?: boolean;
 }
 
 export interface ProviderAttempt {
@@ -168,6 +231,7 @@ export interface OfficialPaper {
     missingCount?: number;
     expectedQuestionCount?: number;
   };
+  importSource?: "admin-import";
   pageProgress?: PageProgress | null;
 }
 
@@ -266,3 +330,128 @@ export interface ChatSendResponse {
 
 /** Backends return either `{ success, data }` or the payload directly. */
 export type Envelope<T> = { success: boolean; data: T } | T;
+
+export type ImportMode =
+  | "official-paper"
+  | "real-paper"
+  | "topic-wise"
+  | "bank-manual"
+  | "bank-ai";
+
+export interface AdminExamProfile {
+  examName: string;
+  examSlug: string;
+  optionCount: number;
+  fifthOptionText: string;
+  defaultPattern: string;
+  enabledQuestionTypes: QuestionType[];
+  typeMix: Record<string, number>;
+  markingScheme: {
+    correct: number;
+    incorrect: number;
+    unanswered: number;
+    disqualifyBlankPercent: number | null;
+  };
+  questionTypes: { id: QuestionType; label: string; labelHi: string }[];
+}
+
+export interface ImportPreviewRow {
+  index: number;
+  questionText: string;
+  questionType: string;
+  optionCount: number;
+  valid: boolean;
+  errors: string[];
+}
+
+export type CatalogLinkMode = "auto" | "existing" | "new";
+
+export interface OfficialPaperCatalogItem {
+  catalogId: string;
+  title: string;
+  year: number;
+  setCode?: string;
+  status: string;
+  quizId: string | null;
+  questionPdfUrl?: string;
+  answerKeyPdfUrl?: string;
+  publishedAt?: string;
+}
+
+export interface CatalogMatchPreview {
+  catalogId: string;
+  title: string;
+  year: number;
+  setCode?: string;
+  status: string;
+  hasQuiz: boolean;
+}
+
+export interface ImportValidateResponse {
+  preview: ImportPreviewRow[];
+  validCount: number;
+  totalCount: number;
+  aiNormalized: boolean;
+  topicsAutoAssigned?: boolean;
+  catalogMatch?: CatalogMatchPreview | null;
+  detectedFormat?: "cet-paper-export" | "standard";
+  profile: { optionCount: number; defaultPattern: string };
+  normalized: unknown[];
+}
+
+export interface ImportResult {
+  inserted: number;
+  skipped: number;
+  quizId: string | null;
+  catalogId?: string | null;
+  catalogCreated?: boolean;
+  questionIds: string[];
+}
+
+export interface GenerateResult {
+  inserted: number;
+  preview: { _id: string; questionType: string; questionText: string; options: string[] }[];
+  profile: { optionCount: number; defaultPattern?: string };
+}
+
+export type ContactCategory =
+  | "feedback"
+  | "bug"
+  | "feature_request"
+  | "career"
+  | "investor"
+  | "partnership"
+  | "general";
+
+export type ContactSource = "contact" | "feedback";
+
+export interface ContactSubmitResult {
+  id: string;
+  sheetSynced: boolean;
+  screenshotUrl?: string | null;
+  screenshotSkipped?: boolean;
+  message: string;
+}
+
+export interface ContactSubmission {
+  _id: string;
+  name: string;
+  email: string;
+  category: ContactCategory;
+  subject: string;
+  message: string;
+  screenshotUrl?: string | null;
+  source: ContactSource;
+  sheetSynced: boolean;
+  sheetError?: string | null;
+  createdAt: string;
+}
+
+export interface FeedbackListResponse {
+  items: ContactSubmission[];
+  total: number;
+  page: number;
+  limit: number;
+  spreadsheetUrl: string;
+  imageKitReady?: boolean;
+}

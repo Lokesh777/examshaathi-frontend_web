@@ -178,12 +178,12 @@ export function OldPapersPage() {
             <Archive className="h-5 w-5" />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="text-[10px] uppercase tracking-wider opacity-90">Old Papers</div>
+            <div className="text-[10px] uppercase tracking-wider opacity-90">Official Papers</div>
             <h1 className="truncate text-lg font-bold">
-              {selectedExam?.name ?? "Official CET Papers"}
+              {selectedExam?.name ?? "Previous year papers"}
             </h1>
             <p className="mt-0.5 text-xs opacity-90">
-              Real Rajasthan RSSB previous-year papers · 120 min · CET marking
+              RSSB previous-year sets with official PDF & answer key links · 120 min · CET marking
             </p>
           </div>
         </div>
@@ -283,8 +283,8 @@ export function OldPapersPage() {
             <div className="mt-3 font-bold">No official papers yet</div>
             <p className="mt-1 text-sm text-muted-foreground">
               {isAdmin
-                ? "Run Phase 1 to fetch PDF links, then Phase 2 to build quizzes."
-                : "Official papers will appear here once your admin syncs them."}
+                ? "Run Phase 1 to fetch PDF links, then Phase 2 or JSON import to publish quizzes."
+                : "Official previous-year papers will appear here once your admin adds them."}
             </p>
           </Card>
         ) : (
@@ -302,14 +302,14 @@ export function OldPapersPage() {
                       syncing={syncing}
                       livePaper={
                         syncJob?.livePaper?.catalogId === p.catalogId
-                          ? syncJob.livePaper
+                          ? syncJob?.livePaper
                           : undefined
                       }
                       onPublishFromCache={() =>
                         extractSyncM.mutate({ catalogId: p.catalogId, publishOnly: true })
                       }
                       onExtractImageQuestions={() =>
-                        paper.catalogId && imageExtractM.mutate(paper.catalogId)
+                        p.catalogId && imageExtractM.mutate(p.catalogId)
                       }
                       onFillMissing={() =>
                         extractSyncM.mutate({
@@ -589,8 +589,10 @@ function OfficialPaperCard({
   const syncStatus = paper.status ?? "published";
   const badge = STATUS_BADGE[syncStatus] ?? STATUS_BADGE.pending;
   const canStart = syncStatus === "published" && paper.quizId;
-  const isThisExtracting =
-    syncStatus === "extracting" || (extractingCatalogId && paper.catalogId === extractingCatalogId);
+  const isThisExtracting = Boolean(
+    syncStatus === "extracting" ||
+      (extractingCatalogId && paper.catalogId === extractingCatalogId),
+  );
   const canExtract =
     isAdmin &&
     onExtractWithProvider &&

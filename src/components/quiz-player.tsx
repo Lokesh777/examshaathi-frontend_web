@@ -333,8 +333,13 @@ export function QuizPlayer({
         )}
 
         <Card className="p-5">
-          <div className="mb-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-            {q.difficulty}
+          <div className="mb-1 flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            <span>{q.difficulty}</span>
+            {q.questionType && q.questionType !== "direct" && (
+              <span className="rounded bg-secondary px-1.5 py-0.5 normal-case text-[10px]">
+                {q.questionType.replace(/_/g, " ")}
+              </span>
+            )}
           </div>
           <div className="whitespace-pre-wrap text-base font-semibold leading-relaxed">
             {q.questionText}
@@ -397,26 +402,17 @@ export function QuizPlayer({
           </div>
         </Card>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex items-center gap-2">
           <Button
             variant="outline"
             size="sm"
+            className="shrink-0"
             onClick={() => setIdx((i) => Math.max(0, i - 1))}
             disabled={idx === 0}
           >
             <ChevronLeft className="h-4 w-4" /> Prev
           </Button>
-          {idx < total - 1 ? (
-            <Button size="sm" className="ml-auto" onClick={() => setIdx((i) => Math.min(total - 1, i + 1))}>
-              Next <ChevronRight className="h-4 w-4" />
-            </Button>
-          ) : (
-            <Button size="sm" className="ml-auto" onClick={() => setConfirmDialog(true)} disabled={submitting}>
-              {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Submit ({answered}/{total})
-            </Button>
-          )}
-          <div className="order-last w-full min-w-0 sm:order-none sm:flex-1">
+          <div className="min-w-0 flex-1 overflow-x-auto">
             <Pagination
               total={total}
               current={idx}
@@ -425,6 +421,25 @@ export function QuizPlayer({
               questions={quiz.questions}
             />
           </div>
+          {idx < total - 1 ? (
+            <Button
+              size="sm"
+              className="ml-auto shrink-0"
+              onClick={() => setIdx((i) => Math.min(total - 1, i + 1))}
+            >
+              Next <ChevronRight className="h-4 w-4" />
+            </Button>
+          ) : (
+            <Button
+              size="sm"
+              className="ml-auto shrink-0"
+              onClick={() => setConfirmDialog(true)}
+              disabled={submitting}
+            >
+              {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Submit ({answered}/{total})
+            </Button>
+          )}
         </div>
       </div>
 

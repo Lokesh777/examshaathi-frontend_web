@@ -19,7 +19,7 @@ export function QuizByIdPage() {
   if (isLoading)
     return (
       <div className="mx-auto max-w-2xl space-y-4">
-        <div className="text-center text-xs text-muted-foreground">Loading your mock paper…</div>
+        <div className="text-center text-xs text-muted-foreground">Loading your quiz…</div>
         <Skeleton className="h-2 w-full" />
         <Skeleton className="h-40 w-full rounded-2xl" />
         <Skeleton className="h-12 w-full rounded-xl" />
@@ -29,7 +29,7 @@ export function QuizByIdPage() {
   if (isError || !data?.questions?.length)
     return (
       <Card className="mx-auto max-w-md p-6 text-center text-sm text-muted-foreground">
-        Couldn't load this mock paper.{" "}
+        Couldn&apos;t load this quiz.{" "}
         <button onClick={() => refetch()} className="font-semibold text-primary hover:underline">
           Retry
         </button>

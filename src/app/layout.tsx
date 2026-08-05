@@ -3,12 +3,21 @@ import { AppProviders } from "./providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ExamSaathi — AI-powered CET Preparation",
+  title: "ExamSaathi — Daily streak, topic banks & AI tutor for CET",
   description:
-    "Crack CET, SSC, banking and more with an AI tutor, adaptive mock tests, previous papers and topic-wise quizzes.",
+    "Rajasthan CET prep with daily streak challenges, shared AI topic question banks, topic readiness quizzes, pattern-true mocks, old papers, and a Hindi/English AI tutor.",
   authors: [{ name: "ExamSaathi" }],
   applicationName: "ExamSaathi",
   manifest: "/manifest.webmanifest",
+  metadataBase: new URL("https://examshaathicom.vercel.app"),
+  openGraph: {
+    title: "ExamSaathi — AI CET preparation",
+    description:
+      "Daily streaks, shared topic banks, mocks, and a Hindi/English AI tutor for Rajasthan CET.",
+    url: "https://examshaathicom.vercel.app",
+    siteName: "ExamSaathi",
+    type: "website",
+  },
 };
 
 export const viewport: Viewport = {

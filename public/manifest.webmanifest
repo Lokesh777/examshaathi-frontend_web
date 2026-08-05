@@ -1,15 +1,15 @@
 {
   "name": "ExamSaathi — AI CET Prep",
   "short_name": "ExamSaathi",
-  "description": "AI-powered exam preparation for CET, SSC, banking and more.",
+  "description": "Daily streak, topic banks, mocks, and Hindi/English AI Tutor for Rajasthan CET.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#faf8f3",
+  "background_color": "#0b1220",
   "theme_color": "#4f46e5",
   "icons": [
     {
       "src": "/icon",
-      "sizes": "32x32",
+      "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
     }

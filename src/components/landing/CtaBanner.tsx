@@ -16,8 +16,15 @@ export function CtaBanner() {
           style={{ background: "var(--gradient-hero)" }}
         >
           <h2 className="text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
-            {isReady && isAuthenticated ? "Keep the momentum going" : "Ready to start practicing?"}
+            {isReady && isAuthenticated
+              ? "Protect your streak — practice today"
+              : "Start your streak. Fill your first topic bank."}
           </h2>
+          <p className="max-w-lg text-sm text-primary-foreground/85">
+            {isReady && isAuthenticated
+              ? "Daily challenge, topic quizzes, mocks, and AI Tutor — all in one place."
+              : "Free to start. No credit card. Built for CET aspirants in Rajasthan."}
+          </p>
           {!isReady ? (
             <div className="h-12 w-44 animate-pulse rounded-full bg-background/40" aria-hidden />
           ) : isAuthenticated ? (
@@ -25,7 +32,7 @@ export function CtaBanner() {
               to="/exams"
               className="inline-flex items-center gap-2 rounded-full bg-background px-6 py-3 text-sm font-semibold text-foreground transition-transform hover:scale-[1.02]"
             >
-              Go to Dashboard
+              Open dashboard
               <ArrowRight className="h-4 w-4" />
             </Link>
           ) : (
@@ -33,7 +40,7 @@ export function CtaBanner() {
               to="/auth/register"
               className="inline-flex items-center gap-2 rounded-full bg-background px-6 py-3 text-sm font-semibold text-foreground transition-transform hover:scale-[1.02]"
             >
-              Get Started Free
+              Get started free
               <ArrowRight className="h-4 w-4" />
             </Link>
           )}

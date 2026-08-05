@@ -27,6 +27,13 @@ export function toApiError(error: unknown): ApiError {
     if (!error.response) {
       return new ApiError("Network error: could not reach the server.", 0, null);
     }
+    if (error.response.status === 413) {
+      return new ApiError(
+        "Payload too large. Try uploading a .json file, split the paper into smaller batches, or restart the backend after the latest update (15MB limit).",
+        413,
+        body,
+      );
+    }
     return new ApiError(
       body?.message ?? error.message ?? `Request failed (${error.response.status})`,
       error.response.status,

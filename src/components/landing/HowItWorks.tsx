@@ -1,15 +1,21 @@
 import { Reveal } from "./Reveal";
 
 const steps = [
-  { title: "Pick Your Exam", body: "Choose your exam and see the full topic list." },
-  { title: "Practice by Topic", body: "Get fresh AI-generated questions for any topic, anytime." },
   {
-    title: "Take Full Mock Papers",
-    body: "Simulate the real exam with pattern-matched mock tests.",
+    title: "Choose your exam",
+    body: "Open CET (and more exams as we add them) and see the full topic list with readiness.",
   },
   {
-    title: "Compete & Improve",
-    body: "Check your rank on the leaderboard and track your growth.",
+    title: "Build the daily habit",
+    body: "Hit the daily streak challenge — 20 mixed questions across the syllabus — then drill weak topics.",
+  },
+  {
+    title: "Generate & practice",
+    body: "Fill the shared bank (normal / new pattern / mixed), create topic quizzes, and sit full mocks.",
+  },
+  {
+    title: "Ask & improve",
+    body: "Clear doubts with AI Tutor in Hindi or English, then check your rank on the leaderboard.",
   },
 ];
 
@@ -20,7 +26,7 @@ export function HowItWorks() {
         <Reveal>
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">How it works</h2>
           <p className="mt-3 max-w-xl text-muted-foreground">
-            Four steps from “where do I start?” to “I know exactly where I stand.”
+            From first login to exam-ready — streak, practice, mock, and tutor in one loop.
           </p>
         </Reveal>
 

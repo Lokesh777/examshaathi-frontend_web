@@ -5,10 +5,13 @@ import {
   Archive,
   BookOpen,
   FileText,
+  Home,
   Loader2,
   LogOut,
   MessageCircle,
+  MessageSquarePlus,
   Moon,
+  Shield,
   Sun,
   UserCircle,
 } from "lucide-react";
@@ -75,6 +78,8 @@ function ExamShell({
   children: React.ReactNode;
 }) {
   const { selectedExam, exams, isLoading, isError, select, refetch } = useExam();
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const needPicker = !isLoading && exams.length > 1 && !selectedExam;
   const isExamRoute = pathname.startsWith("/exams");
@@ -87,8 +92,21 @@ function ExamShell({
       </div>
 
       <header className="sticky top-0 z-40 border-b border-border bg-background">
-        <div className="mx-auto flex h-14 w-full max-w-6xl items-center gap-3 px-4 sm:px-6">
-          <Link to="/" className="flex min-w-0 items-center gap-2">
+        <div className="mx-auto flex h-14 w-full max-w-6xl items-center gap-2 px-4 sm:gap-3 sm:px-6">
+          <a
+            href="/"
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-border text-muted-foreground transition hover:bg-secondary/60 hover:text-foreground"
+            aria-label="Home — ExamSaathi landing"
+            title="Home"
+          >
+            <Home className="h-4 w-4" />
+          </a>
+
+          <Link
+            to={selectedExam ? "/exams/$examId/topics" : "/profile"}
+            params={selectedExam ? { examId: selectedExam._id } : undefined}
+            className="flex min-w-0 items-center gap-2"
+          >
             <BrandMark className="h-8 w-8 rounded-lg" iconClassName="h-4 w-4" />
             <div className="min-w-0">
               {selectedExam ? (
@@ -107,9 +125,12 @@ function ExamShell({
           {selectedExam && selectedExam.syllabusStatus === "ready" && (
             <nav className="ml-4 hidden items-center gap-1 rounded-full border border-border bg-secondary/60 p-1 md:flex">
               <NavPill to="/exams/$examId/topics" examId={selectedExam._id} icon={BookOpen} label="Topics" pathname={pathname} match="topics" />
-              <NavPill to="/exams/$examId/mock" examId={selectedExam._id} icon={FileText} label="Real Paper" pathname={pathname} match="mock" />
-              <NavPill to="/exams/$examId/old-papers" examId={selectedExam._id} icon={Archive} label="Old Papers" pathname={pathname} match="old-papers" />
+              <NavPill to="/exams/$examId/mock" examId={selectedExam._id} icon={FileText} label="Mock" pathname={pathname} match="mock" />
+              <NavPill to="/exams/$examId/old-papers" examId={selectedExam._id} icon={Archive} label="Official" pathname={pathname} match="old-papers" />
               <NavPill to="/exams/$examId/chat" examId={selectedExam._id} icon={MessageCircle} label="AI Tutor" pathname={pathname} match="chat" />
+              {isAdmin && (
+                <NavPill to="/exams/$examId/admin" examId={selectedExam._id} icon={Shield} label="Admin" pathname={pathname} match="admin" />
+              )}
             </nav>
           )}
 
@@ -141,6 +162,22 @@ function ExamShell({
                     <UserCircle className="mr-2 h-4 w-4" /> Profile
                   </Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/profile" className="cursor-pointer" search={{ tab: "support" }}>
+                    <MessageSquarePlus className="mr-2 h-4 w-4" /> Support & feedback
+                  </Link>
+                </DropdownMenuItem>
+                {isAdmin && selectedExam && (
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to="/exams/$examId/admin"
+                      params={{ examId: selectedExam._id }}
+                      className="cursor-pointer"
+                    >
+                      <Shield className="mr-2 h-4 w-4" /> Admin
+                    </Link>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onSelect={onLogout}
@@ -195,7 +232,7 @@ function ExamShell({
             <div className="mx-auto grid h-full max-w-6xl grid-cols-4">
               <BottomTab to="/exams/$examId/topics" examId={selectedExam._id} icon={BookOpen} label="Topics" pathname={pathname} match="topics" />
               <BottomTab to="/exams/$examId/mock" examId={selectedExam._id} icon={FileText} label="Mock" pathname={pathname} match="mock" />
-              <BottomTab to="/exams/$examId/old-papers" examId={selectedExam._id} icon={Archive} label="Old" pathname={pathname} match="old-papers" />
+              <BottomTab to="/exams/$examId/old-papers" examId={selectedExam._id} icon={Archive} label="Official" pathname={pathname} match="old-papers" />
               <BottomTab to="/exams/$examId/chat" examId={selectedExam._id} icon={MessageCircle} label="AI" pathname={pathname} match="chat" />
             </div>
           </nav>
@@ -241,7 +278,7 @@ function BottomTab({
   pathname,
   match,
 }: {
-  to: "/exams/$examId/topics" | "/exams/$examId/mock" | "/exams/$examId/old-papers" | "/exams/$examId/chat";
+  to: "/exams/$examId/topics" | "/exams/$examId/mock" | "/exams/$examId/old-papers" | "/exams/$examId/chat" | "/exams/$examId/admin";
   examId: string;
   icon: typeof BookOpen;
   label: string;
@@ -271,7 +308,7 @@ function NavPill({
   pathname,
   match,
 }: {
-  to: "/exams/$examId/topics" | "/exams/$examId/mock" | "/exams/$examId/old-papers" | "/exams/$examId/chat";
+  to: "/exams/$examId/topics" | "/exams/$examId/mock" | "/exams/$examId/old-papers" | "/exams/$examId/chat" | "/exams/$examId/admin";
   examId: string;
   icon: typeof BookOpen;
   label: string;

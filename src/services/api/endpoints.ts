@@ -21,8 +21,18 @@ export const ENDPOINTS = {
   quizzes: {
     topicQuiz: (examId: string, topicId: string) =>
       `/quiz/exams/${examId}/topics/${topicId}/quiz`,
+    topicQuizzes: (examId: string, topicId: string) =>
+      `/quiz/exams/${examId}/topics/${topicId}/quizzes`,
+    topicQuestions: (examId: string, topicId: string) =>
+      `/quiz/exams/${examId}/topics/${topicId}/questions`,
+    /** Shared-bank AI generate (any logged-in user). */
+    topicGenerate: (examId: string, topicId: string) =>
+      `/quiz/exams/${examId}/topics/${topicId}/generate`,
+    daily: (examId: string) => `/quiz/exams/${examId}/daily`,
+    streak: (examId: string) => `/quiz/exams/${examId}/streak`,
     realPaper: (examId: string) => `/quiz/exams/${examId}/real-paper`,
     quizById: (quizId: string) => `/quiz/quizzes/${quizId}`,
+    questionById: (questionId: string) => `/quiz/questions/${questionId}`,
     attempt: (quizId: string) => `/quiz/quizzes/${quizId}/attempt`,
     leaderboard: (quizId: string) => `/quiz/quizzes/${quizId}/leaderboard`,
   },
@@ -41,6 +51,19 @@ export const ENDPOINTS = {
       `/official-papers/admin/catalog/${catalogId}/extract-image-questions`,
     catalogQuestionMedia: (catalogId: string) =>
       `/official-papers/admin/catalog/${catalogId}/question-media`,
+  },
+  admin: {
+    profile: (examId: string) => `/admin/exams/${examId}/profile`,
+    catalog: (examId: string) => `/admin/exams/${examId}/catalog`,
+    validateImport: (examId: string) => `/admin/exams/${examId}/import/validate`,
+    import: (examId: string) => `/admin/exams/${examId}/import`,
+    generate: (examId: string) => `/admin/exams/${examId}/generate`,
+  },
+  contact: {
+    submit: "/contact",
+    adminList: "/contact/admin",
+    adminDelete: "/contact/admin/delete",
+    adminDeleteOne: (id: string) => `/contact/admin/${id}`,
   },
 } as const;
 

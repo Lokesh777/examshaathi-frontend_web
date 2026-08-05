@@ -1,10 +1,9 @@
 import { Reveal } from "./Reveal";
 
-/** Placeholder numbers — edit these as the product grows. */
 const stats = [
-  { value: "10,000+", label: "Questions Generated" },
-  { value: "500+", label: "Students Practicing" },
-  { value: "Growing", label: "Every Day" },
+  { value: "Daily", label: "20-Q streak challenge" },
+  { value: "10–20", label: "Questions per generate" },
+  { value: "HI + EN", label: "AI Tutor languages" },
 ];
 
 export function Stats() {

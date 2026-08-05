@@ -15,6 +15,8 @@ export function ResultPage() {
   if (!attempt) return <Navigate to="/exams" replace />;
 
   const pct = Math.round(attempt.scorePercent);
+  const passingPct = attempt.summary?.passingMarksPercent;
+  const passed = attempt.summary?.passed;
   const correct = attempt.results.filter((r) => r.isCorrect).length;
   const wrong = attempt.results.filter((r) => !r.isCorrect && r.selectedOption != null).length;
   const skipped = attempt.results.filter((r) => r.selectedOption == null).length;
@@ -55,8 +57,17 @@ export function ResultPage() {
           <Trophy className="h-8 w-8" />
         </div>
         <h1 className="mt-3 text-2xl font-bold">You scored {pct}%</h1>
+        {passingPct != null && (
+          <p className="mt-1 text-sm font-semibold">
+            {passed ? (
+              <span className="text-success">Passed — {passingPct}% required</span>
+            ) : (
+              <span className="text-destructive">Below passing — need {passingPct}%</span>
+            )}
+          </p>
+        )}
         <p className="mt-1 text-sm text-muted-foreground">
-          {attempt.score} / {attempt.totalQuestions} correct
+          {attempt.summary?.score ?? attempt.score} / {attempt.summary?.totalMarks ?? attempt.totalQuestions * 2} marks
         </p>
         <div
           className={`mt-3 inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${badge.className}`}
@@ -200,25 +211,6 @@ function ReviewItem({ index, r }: { index: number; r: AttemptResult }) {
             <div className="rounded-lg bg-secondary/60 p-3 text-xs">
               <div className="mb-1 font-semibold">Explanation</div>
               {r.explanation}
-            </div>
-          )}
-          {r.referenceLinks?.length > 0 && (
-            <div className="text-xs">
-              <div className="mb-1 font-semibold">Sources</div>
-              <ul className="space-y-1">
-                {r.referenceLinks.map((l, i) => (
-                  <li key={i}>
-                    <a
-                      href={l}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="break-all text-primary hover:underline"
-                    >
-                      {l}
-                    </a>
-                  </li>
-                ))}
-              </ul>
             </div>
           )}
         </div>
