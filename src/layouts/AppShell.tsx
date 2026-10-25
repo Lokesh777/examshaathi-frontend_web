@@ -192,7 +192,7 @@ function ExamShell({
       </header>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 pb-24 sm:px-6 md:pb-6">
+        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:px-6 md:pb-6">
           {!isExamRoute ? (
             children
           ) : isLoading ? (
@@ -228,8 +228,8 @@ function ExamShell({
         </main>
 
         {selectedExam && selectedExam.syllabusStatus === "ready" && (
-          <nav className="sticky bottom-0 z-40 h-16 border-t border-border bg-background md:hidden">
-            <div className="mx-auto grid h-full max-w-6xl grid-cols-4">
+          <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden">
+            <div className="mx-auto grid h-16 max-w-6xl grid-cols-4">
               <BottomTab to="/exams/$examId/topics" examId={selectedExam._id} icon={BookOpen} label="Topics" pathname={pathname} match="topics" />
               <BottomTab to="/exams/$examId/mock" examId={selectedExam._id} icon={FileText} label="Mock" pathname={pathname} match="mock" />
               <BottomTab to="/exams/$examId/old-papers" examId={selectedExam._id} icon={Archive} label="Official" pathname={pathname} match="old-papers" />

@@ -76,7 +76,7 @@ export function ChatTabPage() {
   const lang = activeTopic ? getTopicContentLanguage(activeTopic) : null;
 
   return (
-    <div className="fixed inset-x-0 top-14 bottom-16 z-30 flex flex-col bg-background md:bottom-0">
+    <div className="fixed inset-x-0 top-14 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-30 flex flex-col bg-background md:bottom-0">
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.45]"
         style={{
@@ -244,7 +244,7 @@ function ChatThread({ examId, topic }: { examId: string; topic: Topic }) {
         <div ref={bottomRef} />
       </div>
 
-      <div className="shrink-0 border-t border-border/80 bg-background/95 px-3 pt-2.5 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] backdrop-blur-sm sm:px-6 sm:pt-3 sm:pb-3">
+      <div className="shrink-0 border-t border-border/80 bg-background/95 px-3 pt-2.5 pb-2 backdrop-blur-sm sm:px-6 sm:pt-3 sm:pb-3 md:pb-[calc(env(safe-area-inset-bottom)+0.75rem)]">
         {!!data?.length && !sending && (
           <div className="mx-auto mb-2 flex max-w-3xl gap-1.5 overflow-x-auto pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {chips.slice(0, 2).map((c) => (

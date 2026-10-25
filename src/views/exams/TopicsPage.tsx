@@ -187,7 +187,9 @@ export function TopicsPage() {
       </Link>
 
       {!isLoading && !isError && !!data?.length && (
-        <div className="relative">
+        <div>
+          {/* Caption sits outside this box so the icons centre on the input */}
+          <div className="relative">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             value={query}
@@ -206,6 +208,7 @@ export function TopicsPage() {
               <X className="h-3.5 w-3.5" />
             </button>
           )}
+          </div>
           <div className="mt-1.5 text-[11px] text-muted-foreground">
             {query.trim()
               ? `${filtered.length} of ${data.length} topics`

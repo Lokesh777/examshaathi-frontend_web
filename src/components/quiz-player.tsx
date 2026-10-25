@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@/lib/navigation";
 import { toast } from "sonner";
-import { Loader2, ChevronLeft, ChevronRight, Timer, AlertTriangle, X } from "lucide-react";
+import { Loader2, ChevronLeft, ChevronRight, Timer, AlertTriangle, X, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -13,6 +13,13 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { submitQuizAttempt } from "@/services/quizzes/quizService";
 import type { QuizFetchResponse, SubmitAnswer } from "@/types/api";
 import { setLastAttempt } from "@/lib/result-store";
@@ -71,6 +78,38 @@ function Pagination({
           </button>
         ),
       )}
+    </div>
+  );
+}
+
+function QuestionPalette({
+  palette,
+  onSelect,
+  large,
+}: {
+  palette: { i: number; answered: boolean; current: boolean }[];
+  onSelect: (i: number) => void;
+  large?: boolean;
+}) {
+  return (
+    <div className={`grid gap-1.5 ${large ? "grid-cols-6 sm:grid-cols-10" : "grid-cols-5"}`}>
+      {palette.map((p) => (
+        <button
+          key={p.i}
+          type="button"
+          onClick={() => onSelect(p.i)}
+          aria-current={p.current ? "step" : undefined}
+          className={`${large ? "h-11" : "h-8"} rounded-md text-xs font-semibold tabular-nums transition ${
+            p.current
+              ? "bg-primary text-primary-foreground"
+              : p.answered
+                ? "bg-success/15 text-success"
+                : "bg-secondary text-muted-foreground hover:bg-secondary/70"
+          }`}
+        >
+          {p.i + 1}
+        </button>
+      ))}
     </div>
   );
 }
@@ -144,6 +183,7 @@ export function QuizPlayer({
   const [confirmDialog, setConfirmDialog] = useState(false);
   const [exitDialog, setExitDialog] = useState(false);
   const [switchWarn, setSwitchWarn] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);
   const switchCountRef = useRef(0);
 
   // Enter fullscreen when the quiz mounts
@@ -278,61 +318,47 @@ export function QuizPlayer({
           : "border-border text-foreground";
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-background pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
-      <div className="mx-auto flex min-h-full w-full max-w-5xl min-w-0 flex-col justify-center px-4 py-4 sm:px-6 sm:py-6">
-      <div className="flex items-center justify-between rounded-lg border border-border bg-background px-3 py-2">
-        <div className="text-xs font-semibold text-muted-foreground">Exam in progress</div>
-        <button
-          type="button"
-          onClick={() => setExitDialog(true)}
-          className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-xs font-semibold text-muted-foreground hover:bg-secondary/60"
-          aria-label="Exit quiz"
-        >
-          <X className="h-3.5 w-3.5" /> Exit
-        </button>
-      </div>
-      {/* Sticky timer bar */}
-      <div className="mt-3 mb-4 rounded-lg border border-border bg-background/95 px-3 py-2">
-        <div className="flex items-center gap-3 min-w-0">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-background pt-[env(safe-area-inset-top)]">
+      <div className="mx-auto flex min-h-full w-full max-w-5xl min-w-0 flex-col px-4 sm:px-6">
+      {/* One compact sticky header: exit · title · timer · progress */}
+      <div className="sticky top-0 z-10 -mx-4 border-b border-border bg-background/95 px-4 pt-3 pb-2.5 backdrop-blur sm:-mx-6 sm:px-6">
+        <div className="flex min-w-0 items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setExitDialog(true)}
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-border text-muted-foreground hover:bg-secondary/60"
+            aria-label="Exit quiz"
+          >
+            <X className="h-4 w-4" />
+          </button>
           <div className="min-w-0 flex-1">
-            {(paperTitle ?? quiz.title) && (
-              <div className="truncate text-xs font-semibold text-muted-foreground">
-                {paperTitle ?? quiz.title}
-              </div>
-            )}
+            <div className="truncate text-sm font-semibold">
+              {paperTitle ?? quiz.title ?? "Quiz"}
+            </div>
             <div className="text-[11px] text-muted-foreground">
-              {answered}/{total} answered
+              Q {idx + 1}/{total} · {answered} answered
             </div>
           </div>
           <div
-            className={`inline-flex shrink-0 items-center gap-1.5 rounded-lg border px-2.5 py-1 font-mono text-sm font-bold tabular-nums ${tone}`}
+            className={`inline-flex shrink-0 items-center gap-1.5 rounded-lg border px-2.5 py-1.5 font-mono text-sm font-bold tabular-nums ${tone}`}
             aria-live="polite"
           >
             <Timer className="h-3.5 w-3.5" />
             {formatHMS(remainingSec)}
           </div>
         </div>
+        <Progress value={((idx + 1) / total) * 100} className="mt-2.5 h-1" />
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_240px]">
+      <div className="grid flex-1 gap-6 py-4 sm:py-6 lg:grid-cols-[minmax(0,1fr)_240px]">
       <div className="min-w-0 space-y-4">
-        <div className="flex items-center gap-3">
-          <div className="flex-1">
-            <div className="mb-1 flex items-center justify-between text-xs text-muted-foreground">
-              <span>Question {idx + 1} of {total}</span>
-              <span>{answered}/{total} answered</span>
-            </div>
-            <Progress value={((idx + 1) / total) * 100} className="h-1.5" />
-          </div>
-        </div>
-
         {shortfall > 0 && (
           <div className="rounded-lg border border-warning/30 bg-warning/10 px-3 py-2 text-xs text-warning-foreground">
-            This mock has {total} of ~150 questions — some topic banks are still being filled.
+            This mock has only {total} questions so far — some topic banks are still being filled.
           </div>
         )}
 
-        <Card className="p-5">
+        <Card className="p-4 sm:p-5">
           <div className="mb-1 flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
             <span>{q.difficulty}</span>
             {q.questionType && q.questionType !== "direct" && (
@@ -366,7 +392,7 @@ export function QuizPlayer({
                   type="button"
                   onClick={() => pick(pickValue)}
                   disabled={timeUp}
-                  className={`flex w-full items-start gap-3 rounded-xl border p-3 text-left text-sm transition ${
+                  className={`flex min-h-12 w-full items-start gap-3 rounded-xl border p-3 text-left text-[15px] leading-snug transition active:scale-[0.99] sm:text-sm ${
                     selected
                       ? "border-primary bg-primary/5"
                       : "border-border hover:border-primary/40 hover:bg-secondary/40"
@@ -402,17 +428,39 @@ export function QuizPlayer({
           </div>
         </Card>
 
+      </div>
+
+      {/* Palette (desktop sidebar) */}
+      <Card className="hidden h-fit p-4 lg:sticky lg:top-24 lg:block">
+        <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          Questions
+        </div>
+        <QuestionPalette palette={palette} onSelect={setIdx} />
+        <Button
+          variant="outline"
+          className="mt-4 w-full"
+          onClick={() => setConfirmDialog(true)}
+          disabled={submitting}
+        >
+          Submit paper
+        </Button>
+      </Card>
+      </div>
+
+      {/* Sticky action bar — thumb-reachable on phones */}
+      <div className="sticky bottom-0 z-10 -mx-4 border-t border-border bg-background/95 px-4 pt-2.5 pb-[calc(env(safe-area-inset-bottom)+0.625rem)] backdrop-blur sm:-mx-6 sm:px-6">
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
-            size="sm"
-            className="shrink-0"
+            className="h-11 shrink-0 px-3"
             onClick={() => setIdx((i) => Math.max(0, i - 1))}
             disabled={idx === 0}
+            aria-label="Previous question"
           >
-            <ChevronLeft className="h-4 w-4" /> Prev
+            <ChevronLeft className="h-4 w-4" />
+            <span className="hidden sm:inline">Prev</span>
           </Button>
-          <div className="min-w-0 flex-1 overflow-x-auto">
+          <div className="hidden min-w-0 flex-1 overflow-x-auto sm:block">
             <Pagination
               total={total}
               current={idx}
@@ -421,52 +469,70 @@ export function QuizPlayer({
               questions={quiz.questions}
             />
           </div>
+          <Button
+            variant="secondary"
+            className="h-11 min-w-0 flex-1 gap-2 sm:hidden"
+            onClick={() => setPaletteOpen(true)}
+          >
+            <LayoutGrid className="h-4 w-4 shrink-0" />
+            <span className="truncate">
+              {idx + 1} / {total}
+            </span>
+          </Button>
           {idx < total - 1 ? (
             <Button
-              size="sm"
-              className="ml-auto shrink-0"
+              className="h-11 shrink-0 px-4"
               onClick={() => setIdx((i) => Math.min(total - 1, i + 1))}
             >
               Next <ChevronRight className="h-4 w-4" />
             </Button>
           ) : (
             <Button
-              size="sm"
-              className="ml-auto shrink-0"
+              className="h-11 shrink-0 px-4"
               onClick={() => setConfirmDialog(true)}
               disabled={submitting}
             >
               {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Submit ({answered}/{total})
+              Submit
             </Button>
           )}
         </div>
       </div>
 
-      {/* Palette */}
-      <Card className="hidden h-fit p-4 lg:block">
-        <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          Questions
-        </div>
-        <div className="grid grid-cols-5 gap-1.5">
-          {palette.map((p) => (
-            <button
-              key={p.i}
-              onClick={() => setIdx(p.i)}
-              className={`h-8 rounded-md text-xs font-semibold transition ${
-                p.current
-                  ? "bg-primary text-primary-foreground"
-                  : p.answered
-                    ? "bg-success/15 text-success"
-                    : "bg-secondary text-muted-foreground hover:bg-secondary/70"
-              }`}
-            >
-              {p.i + 1}
-            </button>
-          ))}
-        </div>
-      </Card>
-      </div>
+      {/* Palette (mobile bottom sheet) */}
+      <Sheet open={paletteOpen} onOpenChange={setPaletteOpen}>
+        <SheetContent side="bottom" className="max-h-[80dvh] overflow-y-auto rounded-t-2xl pb-[calc(env(safe-area-inset-bottom)+1rem)]">
+          <SheetHeader className="text-left">
+            <SheetTitle>Jump to question</SheetTitle>
+            <SheetDescription>
+              {answered} answered · {total - answered} left
+            </SheetDescription>
+          </SheetHeader>
+          <div className="mt-2 mb-3 flex gap-4 text-[11px] text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-success/30" /> Answered</span>
+            <span className="inline-flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-secondary" /> Not answered</span>
+            <span className="inline-flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-primary" /> Current</span>
+          </div>
+          <QuestionPalette
+            palette={palette}
+            onSelect={(i) => {
+              setIdx(i);
+              setPaletteOpen(false);
+            }}
+            large
+          />
+          <Button
+            className="mt-4 h-11 w-full"
+            onClick={() => {
+              setPaletteOpen(false);
+              setConfirmDialog(true);
+            }}
+            disabled={submitting}
+          >
+            Submit paper ({answered}/{total})
+          </Button>
+        </SheetContent>
+      </Sheet>
 
       <Dialog open={autoDialog}>
         <DialogContent>

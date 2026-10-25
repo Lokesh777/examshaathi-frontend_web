@@ -42,12 +42,22 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="#features" className="transition-colors hover:text-foreground">
+                <Link href="/guide" className="transition-colors hover:text-foreground">
+                  CET 12th Level Guide
+                </Link>
+              </li>
+              <li>
+                <a href="/#features" className="transition-colors hover:text-foreground">
                   Features
                 </a>
               </li>
               <li>
-                <a href="#how-it-works" className="transition-colors hover:text-foreground">
+                <a href="/#faq" className="transition-colors hover:text-foreground">
+                  FAQ
+                </a>
+              </li>
+              <li>
+                <a href="/#how-it-works" className="transition-colors hover:text-foreground">
                   How It Works
                 </a>
               </li>
